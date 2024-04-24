@@ -1,2 +1,4 @@
-# SECurriculumnDesign
-The curriculumn design of Software Engineering. A simple agent with server and web application. This agent can be deploy on every personal computer or server to monitor the usage of CPU, memory, network and so on. Please give me a star, I beg beg you 了.
+# 监控器模块
+主要负责监控PC信息，与服务器进行通信
+- [ ] 获取CPU信息的接口不可用，应该是macOS和Linux获取CPU信息的文件位置不同，看样子是要做三系统适配，考虑devcloud
+- 
