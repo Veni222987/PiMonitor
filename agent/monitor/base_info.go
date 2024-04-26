@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/shirou/gopsutil/cpu"
 	"golang.org/x/sys/unix"
+	"runtime"
 )
 
 type ComputerInfo struct {
@@ -21,6 +22,20 @@ type CPUInfo struct {
 
 func GetCPUInfo() (*CPUInfo, error) {
 	// gopsutil无法实现全兼容，这里需要手动实现
+	switch os := runtime.GOOS; os {
+	case "windows":
+		return getDefaultCPUInfo()
+		// 在Windows系统下执行特定代码
+	case "darwin":
+		return getMacCPUInfo()
+	case "linux":
+		return getDefaultCPUInfo()
+	default:
+		return nil, fmt.Errorf("unsupported OS")
+	}
+}
+
+func getMacCPUInfo() (*CPUInfo, error) {
 	cpuName, err := unix.Sysctl("machdep.cpu.brand_string")
 	if err != nil {
 		return nil, fmt.Errorf("fail to get cpu name: %s", err)
@@ -37,4 +52,16 @@ func GetCPUInfo() (*CPUInfo, error) {
 	}
 
 	return &CPUInfo{CPUName: cpuName, LogicCore: logicCore, PhysicalCore: physicalCore}, nil
+}
+
+func getDefaultCPUInfo() (*CPUInfo, error) {
+	cpus, err := cpu.Info()
+	if err != nil {
+		return nil, fmt.Errorf("get cpu info err %s", err)
+	}
+	if len(cpus) == 0 {
+		return nil, fmt.Errorf("no cpu found")
+	}
+	return &CPUInfo{CPUName: cpus[0].ModelName, LogicCore: int(cpus[0].Cores), PhysicalCore: int(cpus[0].Cores * 2)}, nil
+
 }
