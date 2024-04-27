@@ -1,46 +1,34 @@
 package main
 
-func main() {
-	//info, err := cpu.InfoWithContext(context.Background())
-	//
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//
-	//fmt.Println(info)
-	//
-	//cpuInfo, err := monitor.GetCPUInfo()
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//fmt.Printf("%+v\n", cpuInfo)
+import (
+	"Agent/monitor"
+	"context"
+	"fmt"
+	"log"
+	"time"
+)
 
-	//memInfo, err := mem.VirtualMemory()
-	//
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//
-	//fmt.Println(memInfo)
-	//for {
-	//	// 获取CPU使用率
-	//	cpuPercent, _ := cpu.Percent(time.Second, false)
-	//	fmt.Printf("CPU 使用率: %.2f%%\n", cpuPercent[0])
-	//
-	//	// 获取磁盘使用情况
-	//	diskUsage, _ := disk.Usage("/")
-	//	fmt.Printf("磁盘使用情况: 已使用 %.2f GB，总共 %.2f GB，可用 %.2f GB\n",
-	//		float64(diskUsage.Used)/(1024*1024*1024),
-	//		float64(diskUsage.Total)/(1024*1024*1024),
-	//		float64(diskUsage.Free)/(1024*1024*1024))
-	//
-	//	// 获取内存使用情况
-	//	memInfo, _ := mem.VirtualMemory()
-	//	fmt.Printf("内存使用情况: 已使用 %.2f GB，总共 %.2f GB，可用 %.2f GB\n",
-	//		float64(memInfo.Used)/(1024*1024*1024),
-	//		float64(memInfo.Total)/(1024*1024*1024),
-	//		float64(memInfo.Available)/(1024*1024*1024))
-	//
-	//	time.Sleep(5 * time.Second) // 每隔5秒更新一次信息
-	//}
+func main() {
+	// 主函数创建一个context，传入三个协程中
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func() {
+		_, err := monitor.GetComputerInfoWithContext(ctx)
+		if err != nil {
+			cancel()
+		}
+	}()
+
+	go monitor.GetPerformance(ctx)
+
+	for range time.Tick(time.Second) {
+		select {
+		case <-ctx.Done():
+			fmt.Println("Context done. Exiting...")
+			return
+		default:
+			log.Println("monitoring, time:" + time.Now().String())
+			time.Sleep(time.Second)
+		}
+	}
 }

@@ -1,11 +1,11 @@
 package monitor
 
 import (
+	"context"
 	"fmt"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/net"
-	"log"
 	"runtime"
 	"sync"
 )
@@ -59,31 +59,37 @@ func getNetCard() ([]string, error) {
 	return ret, nil
 }
 
-// GetComputerInfo 获取计算机基础信息，代码只执行一次
+// GetComputerInfoWithContext 获取计算机基础信息，如果基础信息都获取不到，由context终止其他协程
+func GetComputerInfoWithContext(ctx context.Context) (*ComputerInfo, error) {
+	ret, err := GetComputerInfo()
+	if err != nil {
+		return nil, err
+	}
+	return ret, nil
+}
+
 func GetComputerInfo() (*ComputerInfo, error) {
-	once.Do(func() {
-		cpuInfo, err := getCPUInfo()
-		if err != nil {
-			log.Fatal(err)
-		}
+	cpuInfo, err := getCPUInfo()
+	if err != nil {
+		return nil, err
+	}
 
-		mem, err := getMemory()
-		if err != nil {
-			log.Fatal(err)
-		}
+	memory, err := getMemory()
+	if err != nil {
+		return nil, err
+	}
 
-		netcard, err := getNetCard()
-		if err != nil {
-			log.Fatal(err)
-		}
+	netcard, err := getNetCard()
+	if err != nil {
+		return nil, err
+	}
 
-		computerInfo = &ComputerInfo{
-			CPU:         cpuInfo,
-			NetworkCard: netcard,
-			Memory:      mem,
-			OS:          runtime.GOOS,
-		}
-	})
+	computerInfo = &ComputerInfo{
+		CPU:         cpuInfo,
+		NetworkCard: netcard,
+		Memory:      memory,
+		OS:          runtime.GOOS,
+	}
 
 	return computerInfo, nil
 }
