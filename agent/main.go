@@ -1,26 +1,19 @@
 package main
 
-import (
-	"Agent/monitor"
-	"context"
-	"fmt"
-	"github.com/shirou/gopsutil/cpu"
-)
-
 func main() {
-	info, err := cpu.InfoWithContext(context.Background())
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(info)
-
-	cpuInfo, err := monitor.GetCPUInfo()
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("%+v\n", cpuInfo)
+	//info, err := cpu.InfoWithContext(context.Background())
+	//
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//
+	//fmt.Println(info)
+	//
+	//cpuInfo, err := monitor.GetCPUInfo()
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//fmt.Printf("%+v\n", cpuInfo)
 
 	//memInfo, err := mem.VirtualMemory()
 	//
