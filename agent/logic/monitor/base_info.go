@@ -1,6 +1,8 @@
 package monitor
 
 import (
+	"Agent/entity"
+	"Agent/logic/multios"
 	"context"
 	"fmt"
 	"github.com/shirou/gopsutil/v3/cpu"
@@ -11,24 +13,11 @@ import (
 )
 
 var (
-	computerInfo *ComputerInfo
+	computerInfo *entity.ComputerInfo
 	once         sync.Once
 )
 
-type ComputerInfo struct {
-	CPU         *CPUInfo
-	Memory      uint64   // 内存，单位为GB
-	NetworkCard []string // 网卡名称，有需要可以获取网卡的MAC地址
-	OS          string   // 操作系统
-}
-
-type CPUInfo struct {
-	CPUName   string  // CPU名称
-	Core      int     // CPU核心数
-	Frequency float64 // 频率 MHZ
-}
-
-func getCPUInfo() (*CPUInfo, error) {
+func getCPUInfo() (*entity.CPUInfo, error) {
 	cpus, err := cpu.Info()
 	if err != nil {
 		return nil, fmt.Errorf("get cpu info err: %s", err)
@@ -36,7 +25,7 @@ func getCPUInfo() (*CPUInfo, error) {
 	if len(cpus) == 0 {
 		return nil, fmt.Errorf("no cpu found")
 	}
-	return &CPUInfo{CPUName: cpus[0].ModelName, Core: int(cpus[0].Cores) * len(cpus), Frequency: cpus[0].Mhz}, nil
+	return &entity.CPUInfo{CPUName: cpus[0].ModelName, Core: int(cpus[0].Cores) * len(cpus), Frequency: cpus[0].Mhz}, nil
 }
 
 func getMemory() (uint64, error) {
@@ -45,6 +34,14 @@ func getMemory() (uint64, error) {
 		return 0, fmt.Errorf("get memory info error: %s", err)
 	}
 	return memStat.Total, nil
+}
+
+func getDisk() (uint64, error) {
+	size, err := multios.GetTotalDisk()
+	if err != nil {
+		return 0, err
+	}
+	return size, nil
 }
 
 func getNetCard() ([]string, error) {
@@ -60,7 +57,7 @@ func getNetCard() ([]string, error) {
 }
 
 // GetComputerInfoWithContext 获取计算机基础信息，如果基础信息都获取不到，由context终止其他协程
-func GetComputerInfoWithContext(ctx context.Context) (*ComputerInfo, error) {
+func GetComputerInfoWithContext(ctx context.Context) (*entity.ComputerInfo, error) {
 	ret, err := GetComputerInfo()
 	if err != nil {
 		return nil, err
@@ -68,7 +65,7 @@ func GetComputerInfoWithContext(ctx context.Context) (*ComputerInfo, error) {
 	return ret, nil
 }
 
-func GetComputerInfo() (*ComputerInfo, error) {
+func GetComputerInfo() (*entity.ComputerInfo, error) {
 	cpuInfo, err := getCPUInfo()
 	if err != nil {
 		return nil, err
@@ -79,14 +76,20 @@ func GetComputerInfo() (*ComputerInfo, error) {
 		return nil, err
 	}
 
+	diskTotal, err := getDisk()
+	if err != nil {
+		return nil, err
+	}
+
 	netcard, err := getNetCard()
 	if err != nil {
 		return nil, err
 	}
 
-	computerInfo = &ComputerInfo{
+	computerInfo = &entity.ComputerInfo{
 		CPU:         cpuInfo,
 		NetworkCard: netcard,
+		Disk:        diskTotal,
 		Memory:      memory,
 		OS:          runtime.GOOS,
 	}
