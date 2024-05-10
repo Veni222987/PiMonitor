@@ -2,6 +2,7 @@ package monitor
 
 import (
 	"Agent/entity"
+
 	"context"
 	"log"
 	"time"
@@ -14,6 +15,7 @@ import (
 
 const (
 	DURATION time.Duration = 15 * time.Second
+
 )
 
 func GetPerformance(ctx context.Context) error {
@@ -26,11 +28,13 @@ func GetPerformance(ctx context.Context) error {
 			}
 		default:
 			{
+
 				pfm, err := getDetail()
 				if err != nil {
 					return err
 				}
 				log.Printf("%+v", *pfm)
+
 				time.Sleep(DURATION)
 
 				// TODO 这里不要return了，直接调用接口传出去就行
@@ -38,6 +42,7 @@ func GetPerformance(ctx context.Context) error {
 		}
 	}
 }
+
 
 func getDetail() (*entity.Performance, error) {
 	pfm := &entity.Performance{}
