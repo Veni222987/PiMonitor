@@ -2,6 +2,10 @@ package monitor
 
 import (
 	"Agent/entity"
+	"Agent/repo/kafkaclient"
+	"encoding/json"
+	"os"
+	"strconv"
 
 	"context"
 	"log"
@@ -15,10 +19,11 @@ import (
 
 const (
 	DURATION time.Duration = 15 * time.Second
-
 )
 
 func GetPerformance(ctx context.Context) error {
+	kafkaclient.InitProducer()
+	defer kafkaclient.CloseProducer()
 	for {
 		select {
 		case <-ctx.Done():
@@ -35,14 +40,25 @@ func GetPerformance(ctx context.Context) error {
 				}
 				log.Printf("%+v", *pfm)
 
-				time.Sleep(DURATION)
+				pfmbytes, err := json.Marshal(pfm)
+				if err != nil {
+					log.Println("json marshal error:" + err.Error())
+					return err
+				}
+				name, err := os.Hostname()
+				if err != nil {
+					log.Println("get hostname error:" + err.Error())
+					return err
+				}
+				key := name + strconv.FormatInt(time.Now().Unix(), 10)
 
-				// TODO 这里不要return了，直接调用接口传出去就行
+				p, o := kafkaclient.SendMessage("test", []byte(key), pfmbytes)
+				log.Printf("发送消息成功: patition: %d, offset: %d", p, o)
+				time.Sleep(DURATION)
 			}
 		}
 	}
 }
-
 
 func getDetail() (*entity.Performance, error) {
 	pfm := &entity.Performance{}

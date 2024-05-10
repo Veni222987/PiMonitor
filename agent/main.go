@@ -1,7 +1,6 @@
 package main
 
 import (
-
 	"Agent/config"
 	pimonitor "Agent/logic/monitor"
 	"context"
@@ -11,11 +10,8 @@ import (
 )
 
 func main() {
-
 	config.InitLog()
 	defer config.CloseLogFile()
-
-
 	// 主函数创建一个context，传入三个协程中
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -38,7 +34,6 @@ func main() {
 			log.Println("get performance error")
 		}
 	}()
-
 
 	for range time.Tick(time.Second) {
 		select {
