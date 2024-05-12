@@ -1,2 +1,10 @@
-# SECurriculumnDesign
-The curriculumn design of Software Engineering. A simple agent with server and web application. This agent can be deploy on every personal computer or server to monitor the usage of CPU, memory, network and so on. Please give me a star, I beg beg you 了.
+# 服务器模块
+该服务器模块主要负责接收和处理监控信息，同时保证数据能够顺畅地对接前端展示。
+
+
+## 完成情况
+- [x] 初始化Spring框架
+  - [x] 配置统一响应
+  - [x] 配置Cors
+  - [x] 配置全局异常处理
+  - [x] 配置Docker容器启动

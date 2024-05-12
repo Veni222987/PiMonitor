@@ -1,0 +1,14 @@
+# 线上配置文件
+server:
+  port: 8000
+spring:
+  # MySQL配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.77.76.40:3306/pim
+    username: root
+    password: ZAQ1@wsx
+mybatis-plus:
+  configuration:
+    # 生产环境关闭日志
+    log-impl: ''

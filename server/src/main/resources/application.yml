@@ -1,0 +1,52 @@
+# /src/main/resources/application.yml
+
+# 服务器配置
+server:
+  address: 0.0.0.0
+  port: 8000
+  servlet:
+    context-path: /api
+
+
+# spring 配置
+spring:
+  application:
+    name: server
+  # 默认dev环境
+  profiles:
+    active: dev
+  # 文件上传
+  servlet:
+    multipart:
+      # 大小限制
+      max-file-size: 10MB
+
+  # MySQL配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.77.76.40:3306/pim
+    username: root
+    password: ZAQ1@wsx
+    # 连接池配置
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      max-active: 10 # 最大活跃数量 默认8
+      min-idle: 2 # 最小空闲数 默认0
+      initial-size: 5 # 初始连接数
+      max-wait: 2000 # 获取连接最大等待时间 默认 -1
+      validation-query: select 1
+      validation-query-timeout: 5000
+      time-between-eviction-runs-millis: 2000 # 间隔多久进行检测需要关闭的空闲连接
+      min-evictable-idle-time-millis: 600000 # 配置连接在池中最小生存的时间
+      max-wait-thread-count: 20 # 最大等待线程数
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
+      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+
