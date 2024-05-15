@@ -1,4 +1,4 @@
-package monitor
+package performance
 
 import (
 	"Agent/entity"
@@ -21,7 +21,8 @@ const (
 	DURATION time.Duration = 15 * time.Second
 )
 
-func GetPerformance(ctx context.Context) error {
+// MonitorPerformance 监控性能指标
+func MonitorPerformance(ctx context.Context) error {
 	kafkaclient.InitProducer()
 	defer kafkaclient.CloseProducer()
 	for {

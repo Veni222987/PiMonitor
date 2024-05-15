@@ -7,5 +7,4 @@ type Performance struct {
 	DiskPercent   float64 `json:"disk_percent"`   // 磁盘使用率
 	TCPConnection int     `json:"tcp_connection"` // TCP连接数量
 	NetworkRate   float64 `json:"network_rate"`   // 网络速率，KB/S
-
 }

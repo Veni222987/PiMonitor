@@ -2,7 +2,9 @@ package main
 
 import (
 	"Agent/config"
-	pimonitor "Agent/logic/monitor"
+	"Agent/logic/baseinfo"
+	"Agent/logic/performance"
+
 	"context"
 	"log"
 
@@ -16,20 +18,15 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
-		info, err := pimonitor.GetComputerInfoWithContext(ctx)
+		info, err := baseinfo.GetComputerInfoWithContext(ctx)
 		if err != nil {
 			cancel()
 		}
-
-		log.Printf("CPU: %v\n", *info.CPU)
-		log.Printf("Memory: %d GB\n", info.Memory/(1<<30))
-		log.Printf("Disk: %d GB\n", info.Disk/(1<<30))
-		log.Printf("Net card: %v\n", info.NetworkCard)
-		log.Printf("Operating system: %s", info.OS)
+		log.Printf("computer base info: %#v", info)
 	}()
 
 	go func() {
-		err := pimonitor.GetPerformance(ctx)
+		err := performance.MonitorPerformance(ctx)
 		if err != nil {
 			log.Println("get performance error")
 		}
@@ -41,7 +38,6 @@ func main() {
 			log.Println("Context done. Exiting...")
 			return
 		default:
-
 			time.Sleep(time.Second)
 		}
 	}
