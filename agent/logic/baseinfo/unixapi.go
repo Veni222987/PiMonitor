@@ -1,6 +1,6 @@
 //go:build unix || linux
 
-package multios
+package baseinfo
 
 import (
 	"fmt"

@@ -1,20 +1,18 @@
-package monitor
+package baseinfo
 
 import (
 	"Agent/entity"
-	"Agent/logic/multios"
 	"context"
 	"fmt"
+	"runtime"
+
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/net"
-	"runtime"
-	"sync"
 )
 
 var (
 	computerInfo *entity.ComputerInfo
-	once         sync.Once
 )
 
 func getCPUInfo() (*entity.CPUInfo, error) {
@@ -37,7 +35,7 @@ func getMemory() (uint64, error) {
 }
 
 func getDisk() (uint64, error) {
-	size, err := multios.GetTotalDisk()
+	size, err := GetTotalDisk()
 	if err != nil {
 		return 0, err
 	}
@@ -65,6 +63,7 @@ func GetComputerInfoWithContext(ctx context.Context) (*entity.ComputerInfo, erro
 	return ret, nil
 }
 
+// GetComputerInfo 获取计算机基础信息
 func GetComputerInfo() (*entity.ComputerInfo, error) {
 	cpuInfo, err := getCPUInfo()
 	if err != nil {

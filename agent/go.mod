@@ -1,11 +1,13 @@
 module Agent
 
-go 1.22
+go 1.22.1
 
 require (
 	github.com/IBM/sarama v1.43.2
 	github.com/shirou/gopsutil/v3 v3.24.3
 )
+
+require github.com/Veni222987/pimetric v0.0.6
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
