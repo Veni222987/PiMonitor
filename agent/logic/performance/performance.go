@@ -3,12 +3,11 @@ package performance
 import (
 	"Agent/entity"
 	"Agent/repo/kafkaclient"
+	"context"
 	"encoding/json"
+	"log"
 	"os"
 	"strconv"
-
-	"context"
-	"log"
 	"time"
 
 	"github.com/shirou/gopsutil/net"
@@ -34,7 +33,6 @@ func MonitorPerformance(ctx context.Context) error {
 			}
 		default:
 			{
-
 				pfm, err := getDetail()
 				if err != nil {
 					return err
