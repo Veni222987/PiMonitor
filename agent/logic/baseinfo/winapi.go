@@ -1,6 +1,12 @@
 //go:build windows
 
-package multios
+package baseinfo
+
+import (
+	"os"
+	"syscall"
+	"unsafe"
+)
 
 func GetTotalDisk() (uint64, error) {
 	var totalSize uint64
