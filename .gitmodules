@@ -1,3 +1,3 @@
-[submodule "agent/pimetric"]
-	path = agent/pimetric
-	url = https://github.com/Veni222987/pimetric
+[submodule "pimetric"]
+	path = pimetric
+	url = git@github.com:Veni222987/pimetric.git
