@@ -7,6 +7,8 @@ import (
 	"context"
 	"log"
 	"time"
+
+	"github.com/Veni222987/pimetric"
 )
 
 func main() {
@@ -28,6 +30,10 @@ func main() {
 		if err != nil {
 			log.Println("get performance error")
 		}
+	}()
+
+	go func() {
+		pimetric.ExportMetrics()
 	}()
 
 	for range time.Tick(time.Second) {

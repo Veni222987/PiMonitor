@@ -7,7 +7,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.24.3
 )
 
-require github.com/veni222987/pimetric v0.0.1 // indirect
+require github.com/Veni222987/pimetric v0.0.6
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

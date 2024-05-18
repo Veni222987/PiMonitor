@@ -2,14 +2,11 @@ package performance
 
 import (
 	"Agent/entity"
-	"Agent/repo/kafkaclient"
 	"context"
-	"encoding/json"
 	"log"
-	"os"
-	"strconv"
 	"time"
 
+	"github.com/Veni222987/pimetric/counter"
 	"github.com/shirou/gopsutil/net"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
@@ -22,8 +19,10 @@ const (
 
 // MonitorPerformance 监控性能指标
 func MonitorPerformance(ctx context.Context) error {
-	kafkaclient.InitProducer()
-	defer kafkaclient.CloseProducer()
+	counter.RegisterCounter(&counter.Counter{
+		Name:  "agent.send_message_counter",
+		Value: 0,
+	})
 	for {
 		select {
 		case <-ctx.Done():
@@ -38,21 +37,9 @@ func MonitorPerformance(ctx context.Context) error {
 					return err
 				}
 				log.Printf("%+v", *pfm)
-
-				pfmbytes, err := json.Marshal(pfm)
-				if err != nil {
-					log.Println("json marshal error:" + err.Error())
-					return err
+				if c := counter.GetCounter("agent.send_message_counter"); c != nil {
+					c.Incr()
 				}
-				name, err := os.Hostname()
-				if err != nil {
-					log.Println("get hostname error:" + err.Error())
-					return err
-				}
-				key := name + strconv.FormatInt(time.Now().Unix(), 10)
-
-				p, o := kafkaclient.SendMessage("test", []byte(key), pfmbytes)
-				log.Printf("发送消息成功: patition: %d, offset: %d", p, o)
 				time.Sleep(DURATION)
 			}
 		}
