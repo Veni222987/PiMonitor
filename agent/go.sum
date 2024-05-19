@@ -4,6 +4,12 @@ github.com/Veni222987/pimetric v0.0.5 h1:Tm2102HF5KJXcKXWbtdWu//dCNzeSP5tY2N9QTi
 github.com/Veni222987/pimetric v0.0.5/go.mod h1:7K98JA0W4tqdkRGy/gujzlABj2uj2hPAa41BAjxd33U=
 github.com/Veni222987/pimetric v0.0.6 h1:0VUJ0tlG8m+FHghGY3Vslejs2hv4APzjoseECYyzNS4=
 github.com/Veni222987/pimetric v0.0.6/go.mod h1:7K98JA0W4tqdkRGy/gujzlABj2uj2hPAa41BAjxd33U=
+github.com/Veni222987/pimetric v0.0.7 h1:/qImNCLmXxpffRgpLa/IBlykwHCcymBuVuchArLoZbg=
+github.com/Veni222987/pimetric v0.0.7/go.mod h1:7K98JA0W4tqdkRGy/gujzlABj2uj2hPAa41BAjxd33U=
+github.com/Veni222987/pimetric v0.0.8 h1:Ia6JZjHFiH2i9x5eaXtLsTCpeEKr4opt8jgpfVkTs10=
+github.com/Veni222987/pimetric v0.0.8/go.mod h1:7K98JA0W4tqdkRGy/gujzlABj2uj2hPAa41BAjxd33U=
+github.com/Veni222987/pimetric v0.0.9 h1:Yqx9mi7mPs7tylykvxGaQTXE+19Ol5x3FA+Jz0jvfpE=
+github.com/Veni222987/pimetric v0.0.9/go.mod h1:7K98JA0W4tqdkRGy/gujzlABj2uj2hPAa41BAjxd33U=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
