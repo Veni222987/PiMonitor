@@ -10,6 +10,7 @@ import (
 var producer sarama.SyncProducer
 
 func InitProducer() {
+	// TODO kafka模块完全移除
 	var err error
 	producer, err = sarama.NewSyncProducer([]string{config.BROKER}, config.GetDefaultKafkaConfig())
 	if err != nil {
