@@ -6,7 +6,10 @@ import (
 	"log"
 	"time"
 
+	"github.com/Veni222987/pimetric"
+	"github.com/Veni222987/pimetric/api"
 	"github.com/Veni222987/pimetric/counter"
+	"github.com/Veni222987/pimetric/gauge"
 	"github.com/shirou/gopsutil/net"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
@@ -19,8 +22,17 @@ const (
 
 // MonitorPerformance 监控性能指标
 func MonitorPerformance(ctx context.Context) error {
-	counter.RegisterCounter(&counter.Counter{
-		Name:  "agent.send_message_counter",
+	pimetric.RegisterCounter(&counter.Counter{
+		Name:  "send_message_counter",
+		Help:  "agent send message counter",
+		Type:  api.MetricTypeCounter,
+		Value: 0,
+	})
+
+	pimetric.RegisterGauge(&gauge.Gauge{
+		Name:  "tcp_gauge",
+		Help:  "computer tcp connection gauge",
+		Type:  api.MetricTypeGauge,
 		Value: 0,
 	})
 	for {
@@ -37,8 +49,10 @@ func MonitorPerformance(ctx context.Context) error {
 					return err
 				}
 				log.Printf("%+v", *pfm)
-				if c := counter.GetCounter("agent.send_message_counter"); c != nil {
-					c.Incr()
+				if c := pimetric.GetCounter("send_message_counter"); c != nil {
+					if err := c.Incr(); err != nil {
+						log.Println("increment counter error:", err)
+					}
 				}
 				time.Sleep(DURATION)
 			}
@@ -78,6 +92,11 @@ func getDetail() (*entity.Performance, error) {
 		log.Fatal(err)
 	}
 	pfm.TCPConnection = len(connections)
+	if g := pimetric.GetGauge("tcp_gauge"); g != nil {
+		if err := g.SetValue(float64(pfm.TCPConnection)); err != nil {
+			log.Println("set gauge error:", err)
+		}
+	}
 
 	// 获取网卡传输速率
 	netIO, err := net.IOCounters(true)
