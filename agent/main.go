@@ -3,9 +3,11 @@ package main
 import (
 	"Agent/config"
 	"Agent/logic/baseinfo"
+	"Agent/logic/metric"
 	"Agent/logic/performance"
 	"context"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/Veni222987/pimetric"
@@ -14,6 +16,14 @@ import (
 func main() {
 	config.InitLog()
 	defer config.CloseLogFile()
+
+	go func() {
+		log.Printf("============启动metric===============")
+		http.HandleFunc("/metrics", pimetric.GenHandler("agent"))
+		http.ListenAndServe(":54321", nil)
+		//pimetric.ExportMetrics("agent")
+	}()
+
 	// 主函数创建一个context，传入三个协程中
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -33,7 +43,10 @@ func main() {
 	}()
 
 	go func() {
-		pimetric.ExportMetrics()
+		err := metric.MonitorMetric(ctx)
+		if err != nil {
+			log.Println("get base info error")
+		}
 	}()
 
 	for range time.Tick(time.Second) {
