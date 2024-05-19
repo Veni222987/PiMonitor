@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.pi.server.model.enums.RoleEnum;
 
 /**
 * <p>
@@ -24,6 +25,6 @@ public class Role {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String roleName;
+    private RoleEnum roleName;
 
 }

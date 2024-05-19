@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.pi.server.model.enums.UserStatusEnum;
 
 /**
 * <p>
@@ -58,7 +59,7 @@ public class User {
     /**
     * 状态
     */
-    private String status;
+    private UserStatusEnum status;
 
     /**
     * 最后登录时间

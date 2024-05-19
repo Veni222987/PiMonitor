@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.pi.server.model.enums.HostStatusEnum;
 
 /**
 * <p>
@@ -66,7 +67,7 @@ public class Host {
     /**
     * 状态：非监控  监控 异常
     */
-    private String status;
+    private HostStatusEnum status;
 
     /**
     * 主机别名，默认为id
