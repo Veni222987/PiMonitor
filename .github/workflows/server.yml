@@ -15,26 +15,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: 切换工作目录到server
-        run: cd server
-        working-directory: ./server
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
-
+          cache: 'maven'
+          cache-dependency-path: './server/pom.xml' # optional
+      
       - name: Build with Maven
         run: mvn clean package
+        working-directory: ./server
 
       # 镜像名称 在当前目录
       - name: Build Docker image
         run: docker build -t pim-server .
+        working-directory: ./server
         
       - name: Save Docker image
         run: docker save pim-server > pim-server.tar
-
+        working-directory: ./server
+    
       - name: Copy Docker image to server
         uses: appleboy/scp-action@master
         with:
@@ -42,7 +43,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "pim-server.tar"
+          source: "./server/pim-server.tar"
           target: "./temp"
 
       - name: Load Docker image on server
