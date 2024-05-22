@@ -40,12 +40,45 @@ spring:
       min-evictable-idle-time-millis: 600000 # 配置连接在池中最小生存的时间
       max-wait-thread-count: 20 # 最大等待线程数
 
+
   # influxdb 配置
   influx:
     url: http://120.77.76.40:8086
     token: BXGOuKMuT5aCqzXRxok9Qw3Uck0TxJUwcqA4RF_SSyrjlaxpqEQiP-KCusQNC1LOVqgIobtEdCQJzB0WSWk4wA==
     org: PIM
     bucket: myBucket
+
+  # kafka 配置
+  kafka:
+    bootstrap-servers: 120.77.76.40:9093
+    # 消费者配置
+    consumer:
+      group-id: pim-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        sasl.mechanism: PLAIN
+        security.protocol: SASL_PLAINTEXT
+        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="user" password="ZAQ1@wsx";
+      max-poll-records: 500 # 每次拉取的最大数量
+      auto-commit-interval: 1000
+    # 生产者配置
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        sasl.mechanism: PLAIN
+        security.protocol: SASL_PLAINTEXT
+        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="user" password="ZAQ1@wsx";
+      retries: 3 # 重试次数
+      batch-size: 1000 # 批量发送数据的大小
+      buffer-memory: 33554432 # 32M
+    # 监听器配置
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
+      type: batch
 
 
 mybatis-plus:
