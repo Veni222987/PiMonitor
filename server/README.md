@@ -8,3 +8,7 @@
   - [x] 配置Cors
   - [x] 配置全局异常处理
   - [x] 配置Docker容器启动
+- [x] 初始化MySQL
+  - [x] 配置MySQL连接
+  - [x] 使用Mybatis plus 代码生成器生成实体类、mapper
+  - [x] 配置Mybatis plus 分页插件
