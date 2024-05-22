@@ -1,7 +1,11 @@
 package org.pi.server.controller;
 
+import lombok.NonNull;
+import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.model.entity.Host;
+import org.pi.server.service.BaseInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.pi.server.common.Result;
@@ -12,6 +16,9 @@ import org.pi.server.common.Result;
 @RequestMapping("/v1/agents/info")
 public class BaseInfoController {
 
+    @Autowired
+    private BaseInfoService baseInfoService;
+
     /**
      * 获取主机信息
      * @param agentID
@@ -20,9 +27,13 @@ public class BaseInfoController {
     @GetMapping
     public Result<Object> getComputerInfo(@RequestParam String agentID) {
         log.debug("agentID: {}", agentID);
-        // TODO 查数据库，返回CPU信息
-
-        Host host = new Host();
+        if (agentID == null) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        Host host = baseInfoService.getById(agentID);
+        if (host == null) {
+            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+        }
         return ResultUtils.success(host);
     }
 
@@ -32,25 +43,33 @@ public class BaseInfoController {
      * @return
      */
     @PostMapping
-    public Result<Object> postComputerInfo(@RequestBody Host host) {
+    public Result<Long> postComputerInfo(@RequestBody Host host) {
         log.debug(host.toString());
-        // TODO 将body解析后写入数据库
-
-        return ResultUtils.success(host);
+        long id = baseInfoService.postComputerInfo(host);
+        if (id == 0) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        } else if (id == -1) {
+            return ResultUtils.error(ResultCode.OPERATION_ERROR);
+        }
+        return ResultUtils.success(id);
     }
 
     /**
      * 更新主机信息
      * @param agentID
-     * @param hostName
+     * @param hostname
      * @return
      */
     @PutMapping
-    public Result<Object> putComputerInfo(@RequestParam String agentID, @RequestParam String hostName) {
-        log.debug("agentID: {}, hostName: {}", agentID, hostName);
-        // TODO 写入数据库
-
-        Host host = new Host();
-        return ResultUtils.success(host);
+    public Result<Object> putComputerInfo(@RequestParam String agentID, @RequestParam String hostname) {
+        log.debug("agentID: {}, hostName: {}", agentID, hostname);
+        if (agentID == null || hostname == null) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        boolean b = baseInfoService.putComputerInfo(agentID, hostname);
+        if (!b) {
+            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+        }
+        return ResultUtils.success();
     }
 }

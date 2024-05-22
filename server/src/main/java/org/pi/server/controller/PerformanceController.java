@@ -1,7 +1,10 @@
 package org.pi.server.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.model.dto.Performance;
+import org.pi.server.repo.KafkaRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,8 @@ import org.pi.server.common.ResultCode;
 @RestController
 @RequestMapping("/v1/agents/{agentID}/usage")
 public class PerformanceController {
+    @Autowired
+    private KafkaRepo kafkaRepo;
 
     @GetMapping
     public Result<Object> getPerformance(@PathVariable String agentID, @DateTimeFormat LocalDateTime startTime, @DateTimeFormat LocalDateTime endTime) {
@@ -33,7 +38,9 @@ public class PerformanceController {
     public Result<Object> postPerformance(@PathVariable String agentID, @DateTimeFormat LocalDateTime time, @RequestBody Performance performance) {
         log.debug("agentID:{},time:{},performance:{}", agentID, time, performance);
         //TODO: 这里调用Kafka生产者，生产一条消息
-
+        performance.setTime(time);
+        performance.setAgentID(agentID);
+        kafkaRepo.produce("usage", JSONObject.toJSONString(performance));
         return ResultUtils.success();
     }
 
