@@ -1,4 +1,4 @@
-package org.pi.server.entity;
+package org.pi.server.model.dto;
 
 import java.util.List;
 

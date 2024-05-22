@@ -1,4 +1,4 @@
-package org.pi.server.entity;
+package org.pi.server.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
