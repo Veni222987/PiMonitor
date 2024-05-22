@@ -1,9 +1,9 @@
 package org.pi.server.config;
 
+
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +17,9 @@ public class InfluxDBConfig {
     private String org;
     private String bucket;
 
+
     @Bean
     public InfluxDBClient influxDB() {
         return InfluxDBClientFactory.create(url, token.toCharArray(), org, bucket);
     }
-
 }
