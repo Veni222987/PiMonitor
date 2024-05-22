@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "./server/pim-server.tar"
+          source: "./pim-server.tar"
           target: "./temp"
 
       - name: Load Docker image on server
