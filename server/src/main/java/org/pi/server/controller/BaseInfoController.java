@@ -1,10 +1,10 @@
 package org.pi.server.controller;
 
+import org.pi.server.common.ResultUtils;
+import org.pi.server.model.entity.Host;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
-import java.util.Map;
 import org.pi.server.common.Result;
-import org.pi.server.common.ResultCode;
 
 
 @Slf4j
@@ -12,26 +12,45 @@ import org.pi.server.common.ResultCode;
 @RequestMapping("/v1/agents/info")
 public class BaseInfoController {
 
+    /**
+     * 获取主机信息
+     * @param agentID
+     * @return
+     */
     @GetMapping
-    public Result<Object> getComputerInfo(@RequestParam String mac) {
+    public Result<Object> getComputerInfo(@RequestParam String agentID) {
+        log.debug("agentID: {}", agentID);
         // TODO 查数据库，返回CPU信息
-        return new Result<>(ResultCode.SUCCESS);
-    }
-    
 
+        Host host = new Host();
+        return ResultUtils.success(host);
+    }
+
+    /**
+     * 提交主机信息
+     * @param host
+     * @return
+     */
     @PostMapping
-    public Result<Object> postComputerInfo(@RequestBody Map<String,Object> body) {
-        System.out.println(body.toString());
-        log.debug(body.toString());
+    public Result<Object> postComputerInfo(@RequestBody Host host) {
+        log.debug(host.toString());
         // TODO 将body解析后写入数据库
-        return new Result<>(ResultCode.SUCCESS);
+
+        return ResultUtils.success(host);
     }
 
+    /**
+     * 更新主机信息
+     * @param agentID
+     * @param hostName
+     * @return
+     */
     @PutMapping
-    public Result<Object> putComputerInfo(@RequestBody Map<String,Object> body) {
-        System.out.println(body.toString());
-        log.debug(body.toString());
-        // TODO 将body解析后写入数据库
-        return new Result<>(ResultCode.SUCCESS);
+    public Result<Object> putComputerInfo(@RequestParam String agentID, @RequestParam String hostName) {
+        log.debug("agentID: {}, hostName: {}", agentID, hostName);
+        // TODO 写入数据库
+
+        Host host = new Host();
+        return ResultUtils.success(host);
     }
 }
