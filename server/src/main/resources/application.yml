@@ -40,6 +40,14 @@ spring:
       min-evictable-idle-time-millis: 600000 # 配置连接在池中最小生存的时间
       max-wait-thread-count: 20 # 最大等待线程数
 
+
+  # influxdb 配置
+  influx:
+    url: http://120.77.76.40:8086
+    token: BXGOuKMuT5aCqzXRxok9Qw3Uck0TxJUwcqA4RF_SSyrjlaxpqEQiP-KCusQNC1LOVqgIobtEdCQJzB0WSWk4wA==
+    org: PIM
+    bucket: myBucket
+
   # kafka 配置
   kafka:
     bootstrap-servers: 120.77.76.40:9093
