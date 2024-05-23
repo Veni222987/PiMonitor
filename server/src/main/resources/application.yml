@@ -43,14 +43,14 @@ spring:
 
   # influxdb 配置
   influx:
-    url: http://120.77.76.40:8086
+    url: http://134.175.252.25:8086
     token: BXGOuKMuT5aCqzXRxok9Qw3Uck0TxJUwcqA4RF_SSyrjlaxpqEQiP-KCusQNC1LOVqgIobtEdCQJzB0WSWk4wA==
     org: PIM
     bucket: myBucket
 
   # kafka 配置
   kafka:
-    bootstrap-servers: 120.77.76.40:9093
+    bootstrap-servers: 134.175.252.25:9093
     # 消费者配置
     consumer:
       group-id: pim-group
