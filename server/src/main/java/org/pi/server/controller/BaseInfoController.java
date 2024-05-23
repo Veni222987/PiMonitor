@@ -1,6 +1,7 @@
 package org.pi.server.controller;
 
 import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.model.entity.Host;
@@ -43,7 +44,7 @@ public class BaseInfoController {
      * @return
      */
     @PostMapping
-    public Result<Long> postComputerInfo(@RequestBody Host host) {
+    public Result<Long> postComputerInfo(@NotNull @RequestBody Host host) {
         log.debug(host.toString());
         long id = baseInfoService.postComputerInfo(host);
         if (id == 0) {
