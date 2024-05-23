@@ -44,7 +44,7 @@ spring:
   # influxdb 配置
   influx:
     url: http://134.175.252.25:8086
-    token: BXGOuKMuT5aCqzXRxok9Qw3Uck0TxJUwcqA4RF_SSyrjlaxpqEQiP-KCusQNC1LOVqgIobtEdCQJzB0WSWk4wA==
+    token: n0bzpx6Ckh0S9ITU9peIetgsg62xtLWpqKq3nkvUFKiAD-ak7gGYbKqzbbEyaMfquweRwfKM7tvzMjY80hB6eg==
     org: PIM
     bucket: myBucket
 
