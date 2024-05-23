@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.pi.server.common.ResultUtils;
+import org.pi.server.model.dto.InfluxDBPoints;
 import org.pi.server.repo.KafkaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
