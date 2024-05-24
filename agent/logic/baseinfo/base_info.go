@@ -69,22 +69,18 @@ func GetComputerInfo() (*entity.ComputerInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	memory, err := getMemory()
 	if err != nil {
 		return nil, err
 	}
-
 	diskTotal, err := getDisk()
 	if err != nil {
 		return nil, err
 	}
-
 	netcard, err := getNetCard()
 	if err != nil {
 		return nil, err
 	}
-
 	computerInfo = &entity.ComputerInfo{
 		CPU:         cpuInfo,
 		NetworkCard: netcard,
@@ -92,6 +88,5 @@ func GetComputerInfo() (*entity.ComputerInfo, error) {
 		Memory:      memory,
 		OS:          runtime.GOOS,
 	}
-
 	return computerInfo, nil
 }

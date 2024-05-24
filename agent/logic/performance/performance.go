@@ -2,6 +2,7 @@ package performance
 
 import (
 	"Agent/entity"
+	"Agent/repo"
 	"context"
 	"log"
 	"time"
@@ -46,14 +47,22 @@ func MonitorPerformance(ctx context.Context) error {
 			{
 				pfm, err := getDetail()
 				if err != nil {
-					return err
+					log.Println(err)
+					continue
 				}
+				// 调接口传出去
+				if err := repo.UploadPerformance(8888888, pfm); err != nil {
+					log.Println("upload performance error:", err)
+					continue
+				}
+
 				log.Printf("%+v", *pfm)
 				if c := pimetric.GetCounter("send_message_counter"); c != nil {
 					if err := c.Incr(); err != nil {
 						log.Println("increment counter error:", err)
 					}
 				}
+
 				time.Sleep(DURATION)
 			}
 		}
@@ -84,9 +93,7 @@ func getDetail() (*entity.Performance, error) {
 		return nil, err
 	}
 	pfm.DiskPercent = du.UsedPercent
-
 	// 获取 TCP 连接数量
-
 	connections, err := net.Connections("tcp")
 	if err != nil {
 		log.Fatal(err)
