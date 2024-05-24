@@ -1,9 +1,9 @@
 package entity
 
 type Point struct {
-	Tag   map[string]string      `json:"tag"`
-	Field map[string]interface{} `json:"field"`
-	Time  int64                  `json:"time"`
+	Tag       map[string]string      `json:"tags"`
+	Field     map[string]interface{} `json:"fields"`
+	Timestamp int64                  `json:"timestamp"`
 }
 
 type Measurement struct {

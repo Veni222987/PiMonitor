@@ -35,9 +35,11 @@ func MonitorMetric(ctx context.Context) error {
 				}
 
 				data := &entity.Metrics{
-					Timestamp:   time.Now().Unix(),
-					MetricsList: repo.Scan(portArr),
+					Timestamp:  time.Now().Unix(),
+					MetricsMap: repo.Scan(portArr),
 				}
+				// 发送metrics数据
+				repo.UploadMetrics(8888888, data)
 				log.Printf("Metrics data: %+v", data)
 			}
 		}

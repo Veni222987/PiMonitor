@@ -5,5 +5,5 @@ type Metrics struct {
 	// 监控时间戳
 	Timestamp int64 `json:"timestamp"`
 	// 监控指标，key是app name
-	MetricsList []map[string]interface{} `json:"metrics"`
+	MetricsMap map[string]interface{} `json:"metrics"`
 }

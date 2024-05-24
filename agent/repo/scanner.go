@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-func Scan(pArr []int) []map[string]interface{} {
-	totalMetrics := make([]map[string]interface{}, 0)
+func Scan(pArr []int) map[string]interface{} {
+	totalMetrics := make(map[string]interface{})
 	lock := &sync.Mutex{}
 	wg := &sync.WaitGroup{}
 	// 设置等待的任务数量
@@ -54,7 +54,9 @@ func Scan(pArr []int) []map[string]interface{} {
 			}
 			lock.Lock()
 			defer lock.Unlock()
-			totalMetrics = append(totalMetrics, result)
+			for k, v := range result {
+				totalMetrics[k] = v
+			}
 		}(port)
 	}
 	// 防止网络请求超时，设置1秒timeout
