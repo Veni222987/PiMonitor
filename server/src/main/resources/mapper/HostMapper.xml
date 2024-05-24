@@ -6,10 +6,10 @@
     <resultMap id="BaseResultMap" type="org.pi.server.model.entity.Host">
         <id column="id" property="id" />
         <result column="mac" property="mac" />
-        <result column="cpu" property="cpu" />
+        <result column="cpu" property="cpu" typeHandler="com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler" />
         <result column="memory" property="memory" />
         <result column="disk" property="disk" />
-        <result column="network_card" property="networkCard" />
+        <result column="network_card" property="networkCard" typeHandler="com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler" />
         <result column="os" property="os" />
         <result column="last_time" property="lastTime" />
         <result column="status" property="status" />

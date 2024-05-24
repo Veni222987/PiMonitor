@@ -1,37 +1,77 @@
 package org.pi.server.controller;
 
-import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
-
-import org.pi.server.common.Result;
+import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.pi.server.common.ResultCode;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.pi.server.common.ResultUtils;
+import org.pi.server.model.entity.Host;
+import org.pi.server.service.BaseInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
+import org.pi.server.common.Result;
 
 
 @Slf4j
-@RestController("/api/v1")
+@RestController
+@RequestMapping("/v1/agents/info")
 public class BaseInfoController {
 
-    @GetMapping("/agent/info")
-    public Result<Object> GetComputerInfo(@RequestParam String mac) {
-        // TODO 查数据库，返回CPU信息
-        return new Result<>(ResultCode.SUCCESS);
-    }
-    
+    @Autowired
+    private BaseInfoService baseInfoService;
 
-    @PostMapping("/agent/info")
-    public Result<Object> PostComputerInfo(@RequestBody Map<String,Object> body) {
-        System.out.println(body.toString());
-        log.debug(body.toString());
-        // TODO 将body解析后写入数据库
-        var res = new Result<>(ResultCode.SUCCESS);
-        return res;
+    /**
+     * 获取主机信息
+     * @param agentID
+     * @return
+     */
+    @GetMapping
+    public Result<Object> getComputerInfo(@RequestParam String agentID) {
+        log.debug("agentID: {}", agentID);
+        if (agentID == null) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        Host host = baseInfoService.getById(agentID);
+        if (host == null) {
+            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+        }
+        return ResultUtils.success(host);
     }
-    
+
+    /**
+     * 提交主机信息
+     * @param host
+     * @return
+     */
+    @PostMapping
+    public Result<Long> postComputerInfo(@NotNull @RequestBody Host host) {
+        log.debug(host.toString());
+        long id = baseInfoService.postComputerInfo(host);
+        if (id == 0) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        } else if (id == -1) {
+            return ResultUtils.error(ResultCode.OPERATION_ERROR);
+        }
+        return ResultUtils.success(id);
+    }
+
+    /**
+     * 更新主机信息
+     * @param agentID
+     * @param hostname
+     * @return
+     */
+    @PutMapping
+    public Result<Object> putComputerInfo(@RequestParam String agentID, @RequestParam String hostname) {
+        log.debug("agentID: {}, hostName: {}", agentID, hostname);
+        if (agentID == null || hostname == null) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        boolean b = baseInfoService.putComputerInfo(agentID, hostname);
+        if (!b) {
+            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+        }
+        return ResultUtils.success();
+    }
 }
