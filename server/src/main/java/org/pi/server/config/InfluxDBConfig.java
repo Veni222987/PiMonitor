@@ -19,7 +19,7 @@ public class InfluxDBConfig {
 
 
     @Bean
-    public InfluxDBClient influxDB() {
+    public InfluxDBClient getInfluxDBClient() {
         return InfluxDBClientFactory.create(url, token.toCharArray(), org, bucket);
     }
 }
