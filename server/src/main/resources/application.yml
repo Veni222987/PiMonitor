@@ -40,6 +40,20 @@ spring:
       min-evictable-idle-time-millis: 600000 # 配置连接在池中最小生存的时间
       max-wait-thread-count: 20 # 最大等待线程数
 
+  #reids配置
+  data:
+    redis:
+      database: 1
+      host: 120.77.76.40
+      password: ZAQ1@wsx
+      port: 6379
+      timeout: 3000ms # 连接超时时间
+      jedis:
+        pool:
+          max-active: 8 # 连接池最大连接数（使用负值表示没有限制）
+          max-wait: -1ms # 连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-idle: 8 # 连接池中的最大空闲连接
+          min-idle: 0 # 连接池中的最小空闲连接
 
   # influxdb 配置
   influx:
@@ -79,6 +93,9 @@ spring:
     listener:
       ack-mode: MANUAL_IMMEDIATE
       type: batch
+    jaas:
+      login-module:
+
 
 
 mybatis-plus:
@@ -91,3 +108,47 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
 
+
+justauth:
+  enabled: true
+  type:
+    GITEE:
+      client-id: 797c9a935e1a4835ab993e4c4e4d50d95134353728aa958353947e9609069b82
+      client-secret: 568d59b8d1dadf8aece963c8e29e1675056bd26dc0278d2c932d3e6f3e56fb19
+      redirect-uri: http://41z7h61a.shenzhuo.vip:35054/api/v1/oauth/gitee/callback
+    GITHUB:
+      client-id: Ov23li73rcZBXhnCoRoI
+      client-secret: e3753067c245b0dcfd28a242078b9407d87552af
+      redirect-uri: http://41z7h61a.shenzhuo.vip:35054/api/v1/oauth/github/callback
+    ALIPAY:
+      client-id: 2021004145687551
+      client-secret: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCqmjHGlWpVza22Oub+6G597qaYMBBJJ32QVqfWzmk9kJ2rE2N9eltaeyz1oVG99nY8Hdo0rnsZb1tH/PtWDiTBkj017e64HjA2RkKUxNMUN3br1PSwrLX0aVEjozVehtOH8e2opbHDoRL9K4Ycj1HmmFfEwbT7Ikrip5PC+ek47ny39Z9RLX3yPmyRyRBRxyHL8ce4xQZqDMnq1U/OjZZithpQsZZeNqU+pDuXP2jnE6ZaSTFagB/AS72hFj6kvLTEWI2b4iUvdib8fhZuwnGVLxPyhWNyQsO94oQHLNOchS7I7S/MD3S3tsuz3s7Ue6AUCgpRoUbc4JshjP0MtwJ7AgMBAAECggEALUzITsy58ZKtv6egUqtxO2s1PU/14xbjVoJMCtPASiKuWxDI6DanLz1p0MdHJ0PcXVYn7Lkv4q8Y8+KO8mjLBcNJEZreOnF5p8+8OjiRO9sGbtSbLJaPshiM/QOHVlRCsuRgkNl+fE229xapg8finXJyS8KLxetzKwAIUkt9zCnIF8S1Q2nGpO6Uyq435j5KWo1CBMYX74VvonO3z2ZKafEawwLxWlKe+LDW6wBAZ3+WUEMo7vGu1IOyrF+zoggBWVNZRGbF/uIzslAqWrJ1RFjHb4DY60FyMZKHi7EQIflPuOWg507Y17JAFltoHIZx96jPgso16xFxf/fjNfYt8QKBgQDg4ced0/4S3m4KrEfuCtbmwOQ/BwiVHRR+fSVi3IPCqKmYcIuNATuXlG+pyzb5jZqCf7VT00S7KupRQ3SlIFy4bYAnyJ0zZGmY5l2UZEorMOcEb83lYni0fZdNCS+u2695Neg+ADLpq3jSE3kZC7TDn6V9KZYKKc0AHYFBd+gKNQKBgQDCNZzSrU3efTbzhDD651+N6YwKLfuwchwN/0a9B7iJferlrEg4LyvQ3CMZQf9huxhfydgi0LgHBNo2URAFHe7loqfBLxgwHSIc3QVmjFN/hGjW/KqZc7NiJagGRCawnBhTLzNJdbfDeJY+dwIUpDoC4M0R+QgjLAKP2Bk4VRbv7wKBgQCS52s7Uw0azmscVcb3XeVdAI0aD0IwBrsoliAiIOOB+iQwDPVcu31uW+1GAhZ7l2Fj9oFBrTWs/y/qviIo7KclY4LgelEXDXVeCL8A/TLmXB/N6iuauWUYoyJ/lIytsZ1DlU+NkRuxQe6/bTEih18im9vDk7MMGJpuhNe3KNlQMQKBgQCt8u9AFFIG0giCHQjx8oM3zNPN2lnxNIPEVb26WkwDenEGvkUBbd7E+CfH28EufDHcuiGJLYFnaAU7WWgL7T+pFwNCmTgFAFMpnx3TOCUhtithRHZZc7RcWHYjBq/QyD9RYpmBVpr9zehkkpueeWosYcXML04GksjIpjoQpsYgqQKBgAVMfYhbm0JptU2OJbWF3ApIIaXAHBn9+FDyEB1QnXf/LyKqiWAo28qWABvSxc1Qj75TT6iBsFx9Xt+X/Hhb6nDfxnztQmunybv2q4WHLpkvjvPp2IO3aaW7bxePp0GQXZRQrgYq576Fbx9bPEKRfxHWKFZ85KyDzW2/zWStvD1U
+      redirect-uri: http://41z7h61a.shenzhuo.vip:35054/api/v1/oauth/alipay/callback
+      alipay-public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjn4sK+zxl4JZCzIG1vbvHc1jJ+4Gnc6srWr0Xfk3KDbOXZwwKs+7JPZvTJENQz3PmCYk1qbnBjUz61Luk/LKXcDKf5YXttKWbmD/pdT+jhXNEBt8GD4QVZxtxmE3XkeS1GcY3OgoBYCvUZhTKh4QgfWi5ZzLxocbAC7rwLEQSv4Bgps8anNdtYfo4dhB+64hQR4lmLoKkgLOw/WLo70AUn/u0KIf1g9gv0SrlWzYXYTOTPHb+0esHHpR6jgQlNnIfqoC6jzrnmuwn4SXaWoyLNO3ZSzO6It/CPYNY2922jSFRsPp3bml5W745k+BvJUSgy/QyWx9MOREaG78Ixb5ewIDAQAB
+
+  cache:
+    type: default
+  http-config:
+    timeout: 30000
+    proxy:
+      GOOGLE:
+        type: HTTP
+        hostname: 127.0.0.1
+        port: 7890
+
+# 阿里云oss,邮件配置
+aliyun:
+  accessKeyId: LTAI5tJLsvqUjde8cmXsZwyr
+  accessKeySecret: LMkgHLCmgpQKsU7nJfRI5Hx9HLLZIX
+  oss:
+    endpoint: https://oss-cn-guangzhou.aliyuncs.com
+    bucketName: pi-monitor
+  email:
+    endpoint: dm.aliyuncs.com
+    accountName: javaweb@hu1hu.top
+    fromAlias: PIM
+    subject: 警告
+  sms:
+    endpoint: dysmsapi.aliyuncs.com
+    sign-name: 阿里云短信测试
+    template-code: SMS_154950909
