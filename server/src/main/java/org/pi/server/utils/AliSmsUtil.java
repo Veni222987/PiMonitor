@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class AliSmsUtils {
+public class AliSmsUtil {
     private final AliyunConfig aliyunConfig;
 
     public void send(String code,String toAddress) throws Exception{
@@ -26,7 +26,5 @@ public class AliSmsUtils {
                 .setTemplateCode(aliyunConfig.getSms().getTemplateCode())
                 .setTemplateParam("{\"code\":\""+code+"\"}");
         SendSmsResponse sendResponse = client.sendSms(sendSmsRequest);
-        log.info(sendResponse.body.message);
-        log.info(sendResponse.body.code);
     }
 }

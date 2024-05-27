@@ -19,12 +19,12 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class AliEmailUtils {
+public class AliEmailUtil {
 
     @Autowired
     private AliyunConfig aliyunConfig;
 
-    public void send(String text,String toAddress) throws Exception {
+    public void send(String text, String toAddress) throws Exception {
         log.info("发送邮件，toAddress：{}",toAddress);
         // 创建Client实例并初始化
         Config config = new com.aliyun.teaopenapi.models.Config()
