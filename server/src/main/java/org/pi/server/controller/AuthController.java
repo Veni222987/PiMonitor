@@ -1,15 +1,18 @@
 package org.pi.server.controller;
 
-import cn.hutool.json.JSONUtil;
 import com.xkcoding.justauth.AuthRequestFactory;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthCallback;
-import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
 import org.jetbrains.annotations.NotNull;
+import org.pi.server.common.Result;
+import org.pi.server.common.ResultCode;
+import org.pi.server.common.ResultUtils;
+import org.pi.server.service.AuthService;
+import org.pi.server.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -27,6 +31,7 @@ import java.util.List;
 @ComponentScan({"com.xkcoding.justauth"})
 public class AuthController {
     private final AuthRequestFactory factory;
+    private final AuthService authService;
 
     @GetMapping
     public List<String> list() {
@@ -39,14 +44,17 @@ public class AuthController {
         response.sendRedirect(authRequest.authorize(AuthStateUtils.createState()));
     }
 
-    @RequestMapping("/{type}/callback")
-    public AuthResponse login(@PathVariable String type, AuthCallback callback) {
-        AuthRequest authRequest = factory.get(type);
-        AuthResponse response = authRequest.login(callback);
-        log.info("【response】= {}", JSONUtil.toJsonStr(response));
-        // TODO 处理登录成功
 
-        return response;
+    @RequestMapping("/{type}/callback")
+    public Result<String> login(@PathVariable String type, AuthCallback callback) {
+        long id = authService.login(type, callback);
+        if (id == -1) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        // jwt
+        Map<String, Object> claims = Map.of("userID", id);
+        String jwt = JwtUtil.generateJwt(claims);
+        return ResultUtils.success(jwt);
     }
 
 }
