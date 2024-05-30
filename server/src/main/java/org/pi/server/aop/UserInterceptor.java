@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.pi.server.common.Result;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
-import org.pi.server.utils.JwtUtil;
+import org.pi.server.utils.JwtUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -39,7 +39,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         // 4.解析token,如果解析失败，返回结果
         try{
-            Claims claims = JwtUtil.parseJWT(jwt);
+            Claims claims = JwtUtils.parseJWT(jwt);
             claims.forEach(request::setAttribute);
         }catch(Exception e){
             Result<Object> error = ResultUtils.error(ResultCode.PARAMS_ERROR);

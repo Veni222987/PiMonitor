@@ -5,7 +5,7 @@ import org.pi.server.model.entity.User;
 import org.pi.server.service.AuthCodeService;
 import org.pi.server.service.RedisService;
 import org.pi.server.service.UserService;
-import org.pi.server.utils.JwtUtil;
+import org.pi.server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
                 // 认证成功 下发jwt
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("userID", userID);
-                return JwtUtil.generateJwt(claims, 30 * 60L); // 30分钟
+                return JwtUtils.generateJwt(claims, 30 * 60L); // 30分钟
             }
         } else if (map.containsKey("email")) {
             if (redisService.get(map.get("email").toString()) == null) {
@@ -42,7 +42,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
                 // 认证成功 下发jwt
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("userID", userID);
-                return JwtUtil.generateJwt(claims, 30 * 60L); // 30分钟
+                return JwtUtils.generateJwt(claims, 30 * 60L); // 30分钟
             }
         }
         return "-2";
@@ -58,7 +58,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
                 // 认证成功 下发jwt
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("phoneNumber", map.get("phoneNumber"));
-                return JwtUtil.generateJwt(claims, 30 * 60L); // 30分钟
+                return JwtUtils.generateJwt(claims, 30 * 60L); // 30分钟
             }
         } else if (map.containsKey("email")) {
             if (redisService.get(map.get("email").toString()) == null) {
@@ -68,7 +68,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
                 // 认证成功 下发jwt
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("email", map.get("email"));
-                return JwtUtil.generateJwt(claims, 30 * 60L);
+                return JwtUtils.generateJwt(claims, 30 * 60L);
             }
         }
         return "-2";
@@ -90,7 +90,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
                 // 认证成功 下发jwt
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("userID", userID);
-                return JwtUtil.generateJwt(claims, 30 * 60L); // 30分钟
+                return JwtUtils.generateJwt(claims, 30 * 60L); // 30分钟
             }
         } else if (map.containsKey("email")) {
             if (redisService.get(map.get("email").toString()) == null) {
@@ -106,7 +106,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
                 // 认证成功 下发jwt
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("userID", userID);
-                return JwtUtil.generateJwt(claims, 30 * 60L);
+                return JwtUtils.generateJwt(claims, 30 * 60L);
             }
         }
         return "-2";

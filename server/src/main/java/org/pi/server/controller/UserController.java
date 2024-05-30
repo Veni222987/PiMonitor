@@ -1,14 +1,13 @@
 package org.pi.server.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.Result;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.model.entity.User;
 import org.pi.server.service.UserService;
-import org.pi.server.utils.JwtUtil;
+import org.pi.server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,7 @@ public class UserController {
         // 生成jwt
         Map<String, Object> claims = new HashMap<>();
         claims.put("userID", id);
-        String jwt = JwtUtil.generateJwt(claims);
+        String jwt = JwtUtils.generateJwt(claims);
         return ResultUtils.success(jwt);
     }
 
@@ -55,7 +54,7 @@ public class UserController {
         // 生成jwt
         Map<String, Object> claims = new HashMap<>();
         claims.put("userID", id);
-        String jwt = JwtUtil.generateJwt(claims);
+        String jwt = JwtUtils.generateJwt(claims);
         return ResultUtils.success(jwt);
     }
 

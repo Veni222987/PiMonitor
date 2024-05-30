@@ -11,13 +11,11 @@ import org.pi.server.service.AliyunEmailService;
 import org.pi.server.service.AliyunOssService;
 import org.pi.server.service.AuthCodeService;
 import org.pi.server.service.RedisService;
-import org.pi.server.utils.AliSmsUtil;
-import org.pi.server.utils.CodeUtil;
-import org.pi.server.utils.JwtUtil;
+import org.pi.server.utils.AliSmsUtils;
+import org.pi.server.utils.CodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -25,7 +23,7 @@ import java.util.Map;
 @RequestMapping("/v1/common")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CommonController {
-    private final AliSmsUtil aliSmsUtil;
+    private final AliSmsUtils aliSmsUtils;
     private final RedisService redisService;
     private final AliyunOssService aliyunOssService;
     private final AliyunEmailService aliyunEmailService;
@@ -81,7 +79,7 @@ public class CommonController {
         if (s != null) { // 限制发送频率
             return ResultUtils.error(ResultCode.REQUEST_TOO_FREQUENT);
         }
-        String code = CodeUtil.generateVerifyCode(6);
+        String code = CodeUtils.generateVerifyCode(6);
         String template = "code";
         Map<String, String> map = Map.of("${code}", code);
         // 缓存验证码, 5分钟
@@ -101,11 +99,11 @@ public class CommonController {
         if (s != null) { // 限制发送频率
             return ResultUtils.error(ResultCode.REQUEST_TOO_FREQUENT);
         }
-        String code = CodeUtil.generateVerifyCode(6);
+        String code = CodeUtils.generateVerifyCode(6);
         // 缓存验证码
         redisService.set(phoneNumber, code, 300);
         try {
-            aliSmsUtil.send(code, phoneNumber);
+            aliSmsUtils.send(code, phoneNumber);
         } catch (Exception e) {
             log.error("发送短信失败", e);
             return ResultUtils.error(ResultCode.SYSTEM_ERROR);

@@ -2,13 +2,12 @@ package org.pi.server.utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
-public class PasswordUtil {
+public class PasswordUtils {
     // 将密码加密为哈希值
     @Nullable
     public static String encryptPassword(@NotNull String password) {

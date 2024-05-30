@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.pi.server.mapper.UserMapper;
 import org.pi.server.model.entity.User;
 import org.pi.server.service.UserService;
-import org.pi.server.utils.CodeUtil;
-import org.pi.server.utils.PasswordUtil;
+import org.pi.server.utils.CodeUtils;
+import org.pi.server.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public long login(String account, String password) {
-        password = PasswordUtil.encryptPassword(password);
+        password = PasswordUtils.encryptPassword(password);
         // 登录
         // account 是邮箱
         User user = null;
@@ -51,8 +51,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public long insertUser(User user) {
         user.setId(null);
-        user.setPassword(PasswordUtil.encryptPassword(user.getPassword()));
-        user.setUsername("pim" + CodeUtil.generateVerifyCode(10));
+        user.setPassword(PasswordUtils.encryptPassword(user.getPassword()));
+        user.setUsername("pim" + CodeUtils.generateVerifyCode(10));
         return userMapper.insert(user);
     }
 
@@ -82,14 +82,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean setPasswordByPhoneNumber(String phoneNumber, String password) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("phone_number", phoneNumber).set("password", PasswordUtil.encryptPassword(password));
+        updateWrapper.eq("phone_number", phoneNumber).set("password", PasswordUtils.encryptPassword(password));
         return update(updateWrapper);
     }
 
     @Override
     public boolean setPasswordByEmail(String email, String password) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("email", email).set("password", PasswordUtil.encryptPassword(password));
+        updateWrapper.eq("email", email).set("password", PasswordUtils.encryptPassword(password));
         return update(updateWrapper);
     }
 

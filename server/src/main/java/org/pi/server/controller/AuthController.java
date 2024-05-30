@@ -12,7 +12,7 @@ import org.pi.server.common.Result;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.service.AuthService;
-import org.pi.server.utils.JwtUtil;
+import org.pi.server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +53,7 @@ public class AuthController {
         }
         // jwt
         Map<String, Object> claims = Map.of("userID", id);
-        String jwt = JwtUtil.generateJwt(claims);
+        String jwt = JwtUtils.generateJwt(claims);
         return ResultUtils.success(jwt);
     }
 

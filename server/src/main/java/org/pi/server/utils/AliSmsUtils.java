@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class AliSmsUtil {
+public class AliSmsUtils {
     private final AliyunConfig aliyunConfig;
 
     public void send(String code,String toAddress) throws Exception{

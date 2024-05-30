@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-public class CodeUtil {
+public class CodeUtils {
     public static final String VERIFY_CODES = "1234567890";
 
     /**

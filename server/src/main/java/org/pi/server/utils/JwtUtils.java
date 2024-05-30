@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class JwtUtil {
+public class JwtUtils {
 
     private static final String signKey = "koicmetkciwue^%3847JI&#HJ(*FD^AH#(ASY&H#E)A&#HA(#HJAL)*@#789q3U(*E(3990"; // 签名秘钥
 
