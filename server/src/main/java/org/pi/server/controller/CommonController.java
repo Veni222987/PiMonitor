@@ -13,9 +13,11 @@ import org.pi.server.service.AuthCodeService;
 import org.pi.server.service.RedisService;
 import org.pi.server.utils.AliSmsUtils;
 import org.pi.server.utils.CodeUtils;
+import org.pi.server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -111,8 +113,14 @@ public class CommonController {
         return ResultUtils.success();
     }
 
+    /**
+     * 验证验证码
+     * @param userID 用户ID
+     * @param requestMap type login/register/resetPassword/bind
+     * @return
+     */
     @PostMapping("authCode")
-    public Result authCode(@GetAttribute String userID, @NotNull @RequestBody Map<String,Object> requestMap) {
+    public Result<Object> authCode(@GetAttribute String userID, @NotNull @RequestBody Map<String,Object> requestMap) {
         String jwt = null;
         if (requestMap.get("type").equals("login")) {
             jwt = authCodeService.loginAuthCode(requestMap);
@@ -132,6 +140,8 @@ public class CommonController {
         } else if (jwt.equals("-3")) {
             return ResultUtils.error(ResultCode.SYSTEM_ERROR);
         }
-        return ResultUtils.success(jwt);
+        Map<String, Object> map = new HashMap<>();
+        map.put("jwt",JwtUtils.tokenHead + jwt);
+        return ResultUtils.success(map);
     }
 }

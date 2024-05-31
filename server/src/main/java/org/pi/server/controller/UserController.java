@@ -33,8 +33,10 @@ public class UserController {
         // 生成jwt
         Map<String, Object> claims = new HashMap<>();
         claims.put("userID", id);
-        String jwt = JwtUtils.generateJwt(claims);
-        return ResultUtils.success(jwt);
+        String jwt = JwtUtils.tokenHead + JwtUtils.generateJwt(claims);
+        Map<String, Object> map = new HashMap<>();
+        map.put("jwt", jwt);
+        return ResultUtils.success(map);
     }
 
     @PostMapping("/register")
@@ -54,8 +56,10 @@ public class UserController {
         // 生成jwt
         Map<String, Object> claims = new HashMap<>();
         claims.put("userID", id);
-        String jwt = JwtUtils.generateJwt(claims);
-        return ResultUtils.success(jwt);
+        String jwt = JwtUtils.tokenHead + JwtUtils.generateJwt(claims);
+        Map<String, Object> map = new HashMap<>();
+        map.put("jwt", jwt);
+        return ResultUtils.success(map);
     }
 
     @PostMapping("/resetPassword")
@@ -77,10 +81,12 @@ public class UserController {
 
     @GetMapping("/exists")
     public Result<Object> exists(@RequestParam String type, @RequestParam String value) {
-        if (type.equals("phone_number") || type.equals("email")) {
+        if (!type.equals("phone_number") && !type.equals("email")) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         }
-        return ResultUtils.success(userService.exists(type, value));
+        Map<String, Object> map = new HashMap<>();
+        map.put("isExists", userService.exists(type, value));
+        return ResultUtils.success(map);
     }
 
     @PostMapping("/modify")

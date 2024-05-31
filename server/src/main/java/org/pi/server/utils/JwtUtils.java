@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -14,7 +15,32 @@ import java.util.Map;
 @Slf4j
 public class JwtUtils {
 
-    private static final String signKey = "koicmetkciwue^%3847JI&#HJ(*FD^AH#(ASY&H#E)A&#HA(#HJAL)*@#789q3U(*E(3990"; // 签名秘钥
+    // 令牌JWT 存储的请求头
+    public static String tokenHeader;
+    // 签名秘钥
+    private static String secret;
+    // 令牌过期时间
+    private static long expire;
+    // JWT 的开头
+    public static String tokenHead;
+
+    @Value("${jwt.tokenHeader}")
+    public void setTokenHeader(String tokenHeader) {
+        JwtUtils.tokenHeader = tokenHeader;
+    }
+    @Value("${jwt.secret}")
+    public void setSecret(String secret) {
+        JwtUtils.secret = secret;
+    }
+    @Value("${jwt.expire}")
+    public void setExpire(long expire) {
+        JwtUtils.expire = expire;
+    }
+    @Value("${jwt.tokenHead}")
+    public void setTokenHead(String tokenHead) {
+        JwtUtils.tokenHead = tokenHead;
+    }
+
 
     /**
      * 生成JWT令牌
@@ -22,20 +48,28 @@ public class JwtUtils {
      * @return
      */
     public static String generateJwt(Map<String, Object> claims) {
-        // 过期时间24h
-        long expire = 24 * 3600 * 1000L;
         return Jwts.builder()
-                .addClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, signKey) // 使用 HS256 签名算法对 JWT 进行签名
-                .setExpiration(new Date(System.currentTimeMillis() + expire)) // 设置 JWT 的过期时间
+                .setHeaderParam("typ", "JWT") // 设置 JWT 的类型 (默认 JWT)
+                .setHeaderParam("alg", "HS256") // 设置 JWT 的签名算法 （默认 HS256)
+                .addClaims(claims) // 设置 JWT 的第二部分负载 payload 中存储的内容
+                .signWith(SignatureAlgorithm.HS256, secret) // 使用 HS256 签名算法对 JWT 进行签名
+                .setExpiration(new Date(System.currentTimeMillis() + expire * 1000L)) // 设置 JWT 的过期时间
                 .compact();
     }
 
+    /**
+     * 生成JWT令牌
+     * @param claims JWT第二部分负载 payload 中存储的内容
+     * @param expire 过期时间 单位秒
+     * @return
+     */
     public static String generateJwt(Map<String, Object> claims, Long expire) {
         return Jwts.builder()
-                .addClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, signKey) // 使用 HS256 签名算法对 JWT 进行签名
-                .setExpiration(new Date(System.currentTimeMillis() + expire)) // 设置 JWT 的过期时间
+                .setHeaderParam("typ", "JWT") // 设置 JWT 的类型 (默认 JWT)
+                .setHeaderParam("alg", "HS256") // 设置 JWT 的签名算法 （默认 HS256)
+                .addClaims(claims) // 设置 JWT 的第二部分负载 payload 中存储的内容
+                .signWith(SignatureAlgorithm.HS256, secret) // 使用 HS256 签名算法对 JWT 进行签名
+                .setExpiration(new Date(System.currentTimeMillis() + expire * 1000L)) // 设置 JWT 的过期时间
                 .compact();
     }
 
@@ -47,7 +81,7 @@ public class JwtUtils {
      */
     public static Claims parseJWT(String jwt) {
         return Jwts.parser()
-                .setSigningKey(signKey)
+                .setSigningKey(secret) // 设置签名秘钥(会根据秘钥推断签名算法)
                 .parseClaimsJws(jwt)
                 .getBody();
     }

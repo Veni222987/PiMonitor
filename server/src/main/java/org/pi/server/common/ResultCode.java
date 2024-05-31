@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResultCode {
 
-    SUCCESS(20000, "ok"),
+    SUCCESS(20000, "成功"),
 
     PARAMS_ERROR(40000, "请求参数错误"),
     NOT_LOGIN_ERROR(40100, "未登录"),
@@ -20,6 +20,7 @@ public enum ResultCode {
     VERIFY_CODE_ERROR(40201, "验证码错误"),
     PASSWORD_ERROR(40200, "密码错误"),
     FORBIDDEN_ERROR(40300, "禁止访问"),
+    TOKEN_EXPIRED(40202, "token过期"),
 
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败");

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,15 +47,17 @@ public class AuthController {
 
 
     @RequestMapping("/{type}/callback")
-    public Result<String> login(@PathVariable String type, AuthCallback callback) {
+    public Result<Object> login(@PathVariable String type, AuthCallback callback) {
         long id = authService.login(type, callback);
         if (id == -1) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         }
         // jwt
         Map<String, Object> claims = Map.of("userID", id);
-        String jwt = JwtUtils.generateJwt(claims);
-        return ResultUtils.success(jwt);
+        String jwt = JwtUtils.tokenHead + JwtUtils.generateJwt(claims);
+        Map<String, Object> map = new HashMap<>();
+        map.put("jwt", jwt);
+        return ResultUtils.success(map);
     }
 
 }
