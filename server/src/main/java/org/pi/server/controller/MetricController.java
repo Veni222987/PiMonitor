@@ -3,14 +3,17 @@ package org.pi.server.controller;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.model.dto.InfluxDBPoints;
 import org.pi.server.repo.KafkaRepo;
+import org.pi.server.service.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.pi.server.common.Result;
 
@@ -21,13 +24,17 @@ import org.pi.server.common.Result;
 public class MetricController {
     @Autowired
     private KafkaRepo kafkaRepo;
+    @Autowired
+    private InformationService informationService;
 
     @GetMapping
     public Result<Object> getMetricInfo(@RequestParam String agentID, @RequestParam Long startTime, @RequestParam Long endTime) {
         log.debug("agentID:{},startTime:{},endTime:{}", agentID, startTime, endTime);
-        // TODO process GET request
-
-        return ResultUtils.success();
+        if (startTime >= endTime) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        Map<String, List<Map<String, Object>>> metric = informationService.getMetric(agentID, startTime, endTime);
+        return ResultUtils.success(metric);
     }
 
     @PostMapping
