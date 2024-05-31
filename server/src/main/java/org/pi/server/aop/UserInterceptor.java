@@ -18,7 +18,15 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 @Component
 public class UserInterceptor implements HandlerInterceptor {
-    @Override// 目标资源方法运行前运行，返回true:放行，返回false，不放行
+    /**
+     * 目标资源方法运行前运行
+     * @param request 请求
+     * @param response 响应
+     * @param handler 处理器
+     * @return 返回true:放行，返回false，不放行
+     * @throws Exception
+     */
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 1.获取请求的url
         String url = request.getRequestURL().toString();
@@ -28,7 +36,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         // 3.判断令牌是否存在。如果不存在，返回错误结果
         if(!StringUtils.hasLength(jwt)){
-            Result<Object> error = ResultUtils.error(ResultCode.PARAMS_ERROR);
+            Result<Object> error = ResultUtils.error(ResultCode.NO_AUTH_ERROR);
             // 手动转换 对象--json ------> 阿里巴巴fastJSON
             String result = JSONObject.toJSONString(error);
             response.setCharacterEncoding("UTF-8");
@@ -42,7 +50,7 @@ public class UserInterceptor implements HandlerInterceptor {
             Claims claims = JwtUtils.parseJWT(jwt);
             claims.forEach(request::setAttribute);
         }catch(Exception e){
-            Result<Object> error = ResultUtils.error(ResultCode.PARAMS_ERROR);
+            Result<Object> error = ResultUtils.error(ResultCode.TOKEN_EXPIRED);
             // 手动转换 对象--json ------> 阿里巴巴fastJSON
             String result = JSONObject.toJSONString(error);
             response.setCharacterEncoding("UTF-8");
