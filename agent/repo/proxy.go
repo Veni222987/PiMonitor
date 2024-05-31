@@ -4,19 +4,41 @@ import (
 	"Agent/entity"
 	"bytes"
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/Veni222987/pimetric"
+	"github.com/Veni222987/pimetric/api"
+	"github.com/Veni222987/pimetric/historgram"
 )
 
 var (
 	url string = "http://120.77.76.40:8000/api/v1/agents/services/info"
 )
 
+func init() {
+	pimetric.RegisterHistogram(&historgram.Histogram{
+		Name:  "http_request_time",
+		Help:  "http request time",
+		Type:  api.MetricTypeHistogram,
+		Value: make([]float64, 0),
+	})
+}
+
 // 这里不共用client是为了能够实现真正的并发
-func sendBytes(reader io.Reader) error {
+func sendBytes(bts []byte) error {
+	start := time.Now()
+	defer func() {
+		if timeArr, ok := pimetric.GetHistogram("http_request_time").GetValue().([]float64); ok {
+			timeArr = append(timeArr, float64(time.Since(start).Milliseconds()))
+			pimetric.GetHistogram("http_request_time").Value = timeArr
+		} else {
+			log.Println("type assertion error")
+		}
+	}()
+	reader := bytes.NewReader(bts)
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", url, reader)
 	if err != nil {
@@ -66,9 +88,7 @@ func UploadPerformance(id int, pfmc *entity.Performance) error {
 		log.Printf("fail to encode data:%v", err)
 		return err
 	}
-	// 将字节切片转换为io.Reader接口
-	reader := bytes.NewReader(jsonBytes)
-	if err := sendBytes(reader); err != nil {
+	if err := sendBytes(jsonBytes); err != nil {
 		log.Printf("fail to send data,%v", err)
 		return err
 	}
@@ -106,10 +126,15 @@ func UploadMetrics(id int, metrics *entity.Metrics) error {
 		log.Printf("fail to encode data:%v", err)
 		return err
 	}
-	reader := bytes.NewReader(jsonBytes)
-	if err := sendBytes(reader); err != nil {
+	if err := sendBytes(jsonBytes); err != nil {
 		log.Printf("fail to send data,%v", err)
 		return err
 	}
+	return nil
+}
+
+// Register 注册机器，上传基础信息
+func Register(bts []byte) error {
+	// TODO 上传基础信息
 	return nil
 }
