@@ -81,4 +81,9 @@ public class Host {
     */
     private String hostname;
 
+    /**
+     * 团队id
+     */
+    private Integer teamID;
+
 }
