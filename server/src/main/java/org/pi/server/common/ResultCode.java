@@ -21,6 +21,7 @@ public enum ResultCode {
     PASSWORD_ERROR(40200, "密码错误"),
     FORBIDDEN_ERROR(40300, "禁止访问"),
     TOKEN_EXPIRED(40202, "token过期"),
+    REPEAT_OPERATION(40203, "重复操作"),
 
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败");
