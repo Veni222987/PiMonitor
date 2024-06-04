@@ -48,12 +48,13 @@ spring:
       password: ZAQ1@wsx
       port: 6379
       timeout: 3000ms # 连接超时时间
-      jedis:
+      # Lettuce连接池配置
+      lettuce:
         pool:
-          max-active: 8 # 连接池最大连接数（使用负值表示没有限制）
-          max-wait: -1ms # 连接池最大阻塞等待时间（使用负值表示没有限制）
-          max-idle: 8 # 连接池中的最大空闲连接
-          min-idle: 2 # 连接池中的最小空闲连接
+          max-active: 10  # 允许最大连接数，默认8（负值表示没有限制），推荐值：大于cpu * 2，通常为(cpu * 2) + 2
+          max-idle: 8     # 最大空闲连接数，默认8，推荐值：cpu * 2
+          min-idle: 2     # 最小空闲连接数，默认0
+          max-wait: 5s    # 连接用完时，新的请求等待时间(s秒、ms毫秒)，超过该时间抛出异常，默认-1（负值表示没有限制）
 
   # influxdb 配置
   influx:

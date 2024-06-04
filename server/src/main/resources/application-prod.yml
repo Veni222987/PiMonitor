@@ -12,3 +12,15 @@ mybatis-plus:
   configuration:
     # 生产环境关闭日志
     log-impl: ''
+
+justauth:
+  enabled: true
+  type:
+    GITEE:
+      client-id: aea875917e89b990933fcdb538cd5853558b659d498f7b12fb22930caf257503
+      client-secret: 38b42e453a557a9ca080935d684957fdf7aaadfd3f71e8b57441386d22654e91
+      redirect-uri: http://120.77.76.40:8000/api/v1/oauth/gitee/callback
+    GITHUB:
+      client-id: Ov23liEzH0f0ni9lgNvO
+      client-secret: a88a8c0f8c49215880ddd1e8b47f4611ed0e90a6
+      redirect-uri: http://120.77.76.40:8000/api/v1/oauth/github/callback
