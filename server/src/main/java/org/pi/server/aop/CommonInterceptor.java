@@ -1,7 +1,6 @@
 package org.pi.server.aop;
 
 import com.alibaba.fastjson.JSONObject;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @Component
-public class UserInterceptor implements HandlerInterceptor {
+public class CommonInterceptor implements HandlerInterceptor {
     /**
-     * 目标资源方法运行前运行
+     * 目标资源方法运行前运行(解析token，判断token是否过期，是否有效)
      * @param request 请求
      * @param response 响应
      * @param handler 处理器
@@ -46,20 +45,7 @@ public class UserInterceptor implements HandlerInterceptor {
         }
 
         // 4.解析token,如果解析失败，返回结果
-        try{
-            Claims claims = JwtUtils.parseJWT(jwt);
-            claims.forEach(request::setAttribute);
-        }catch(Exception e){
-            Result<Object> error = ResultUtils.error(ResultCode.TOKEN_EXPIRED);
-            // 手动转换 对象--json ------> 阿里巴巴fastJSON
-            String result = JSONObject.toJSONString(error);
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            response.getWriter().write(result);
-            return false;
-        }
-        // 5.放行
-        return true;
+        return JwtUtils.parseJWT(jwt, request, response);
     }
 
     @Override // 目标资源方法运行后运行

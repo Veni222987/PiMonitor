@@ -27,6 +27,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                         "/v1/common/aliyun/code", // 发送验证码
                         "/v1/common/authCode",  // 验证验证码
                         "/v1/users/login", // 登录
+                        "/v1/oauth/list", // 获取第三方登录列表
                         "/v1/oauth/login/{type}", // 第三方登录
                         "/v1/oauth/{type}/callback" // 第三方登录回调
                 );
