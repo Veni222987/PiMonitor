@@ -1,5 +1,6 @@
 package org.pi.server.controller;
 
+
 import org.jetbrains.annotations.NotNull;
 import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.ResultCode;
@@ -8,13 +9,10 @@ import org.pi.server.service.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-
-
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
-
 import org.pi.server.common.Result;
 
 

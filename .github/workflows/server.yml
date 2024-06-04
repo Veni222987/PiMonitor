@@ -53,7 +53,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          script: docker load < ./temp/pim-server.tar
+          script: docker load < ./temp/server/pim-server.tar
           
       - name: Run Docker container
         uses: appleboy/ssh-action@master
