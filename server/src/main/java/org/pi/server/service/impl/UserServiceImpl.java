@@ -50,7 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setId(null);
         user.setPassword(PasswordUtils.encryptPassword(user.getPassword()));
         user.setUsername("pim" + CodeUtils.generateVerifyCode(10));
-        return userMapper.insert(user);
+        userMapper.insert(user);
+        return user.getId();
     }
 
     @Override
