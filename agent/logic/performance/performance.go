@@ -51,7 +51,7 @@ func MonitorPerformance(ctx context.Context) error {
 					continue
 				}
 				// 调接口传出去
-				if err := repo.UploadPerformance(8888888, pfm); err != nil {
+				if err := repo.UploadPerformance(88888889, pfm); err != nil {
 					log.Println("upload performance error:", err)
 					continue
 				}

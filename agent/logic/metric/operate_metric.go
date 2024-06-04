@@ -39,7 +39,7 @@ func MonitorMetric(ctx context.Context) error {
 					MetricsMap: repo.Scan(portArr),
 				}
 				// 发送metrics数据
-				repo.UploadMetrics(8888888, data)
+				repo.UploadMetrics(88888889, data)
 				log.Printf("Metrics data: %+v", data)
 			}
 		}
