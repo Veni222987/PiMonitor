@@ -30,7 +30,7 @@ public class AliyunOssServiceImpl implements AliyunOssService {
     private final AliyunConfig aliyunConfig;
 
     @Override
-    public String generatePostSignature(String dir) {
+    public JSONObject generatePostSignature(String dir) {
         JSONObject response = new JSONObject();
         try {
             long expireEndTime = System.currentTimeMillis() + aliyunConfig.getOss().getExpireTime() * 1000;
@@ -60,7 +60,7 @@ public class AliyunOssServiceImpl implements AliyunOssService {
                 ossClient.shutdown();
             }
         }
-        return response.toString();
+        return response;
 
 }
 

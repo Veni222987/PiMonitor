@@ -1,5 +1,7 @@
 package org.pi.server.service;
 
+import com.alibaba.fastjson.JSONObject;
+
 public interface AliyunOssService {
     /**
      * 生成post签名
@@ -7,7 +9,7 @@ public interface AliyunOssService {
      * @return
      * @throws Exception
      */
-    String generatePostSignature(String dir);
+    JSONObject generatePostSignature(String dir);
 
     /**
      * 生成URL
