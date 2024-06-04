@@ -44,14 +44,19 @@ public class KafkaRepo {
     @KafkaListener(concurrency = "2", topics = "metric")
     public void processServiceMessage(@NotNull List<ConsumerRecord<String,String>> records, Acknowledgment ack) {
         for (ConsumerRecord<String, String> record : records) {
-            List list = JSONObject.parseObject(record.value(), List.class);
-            for(Object points : list) {
-                InfluxDBPoints points_ = JSONObject.parseObject(points.toString(), InfluxDBPoints.class);
-                String measurement = points_.getMeasurement();
-                WritePrecision precision = points_.getPrecision();
-                for(InfluxDBPoints.Point point : points_.getPoints()) {
-                    influxDBRepo.write(measurement, point.getTags(), point.getFields(), point.getTimestamp(), precision);
+            try{
+                List list = JSONObject.parseObject(record.value(), List.class);
+                for(Object points : list) {
+                    InfluxDBPoints points_ = JSONObject.parseObject(points.toString(), InfluxDBPoints.class);
+                    String measurement = points_.getMeasurement();
+                    WritePrecision precision = points_.getPrecision();
+                    for(InfluxDBPoints.Point point : points_.getPoints()) {
+                        influxDBRepo.write(measurement, point.getTags(), point.getFields(), point.getTimestamp(), precision);
+                    }
                 }
+            } catch (Exception e) {
+                log.warn("KafkaRepo.processServiceMessage error: {}", e.getMessage());
+                log.info("record.value : " + record.value());
             }
         }
         // 手动提交offset，里面的逻辑是采用的同步提交，尝试3次

@@ -14,6 +14,7 @@
         <result column="last_time" property="lastTime" />
         <result column="status" property="status" />
         <result column="hostname" property="hostname" />
+        <result column="team_id" property="teamID" />
     </resultMap>
 
 </mapper>

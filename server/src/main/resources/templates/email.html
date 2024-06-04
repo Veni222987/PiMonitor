@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>确认收货</title>
+</head>
+<body>
+    <div style="width: 750px; margin: 0 auto; background-color: #3171c7;">
+        <div style="padding: 0 15px; padding-bottom: 20px;">
+            <div style="height: 80px; display: flex; justify-content: space-between; position: relative;">
+                <div>
+                    <a  target="_blank" rel="noopener"><img style="margin-top: 0px; width: 350px;height: auto" src="http://hu1hu-markdown.oss-cn-heyuan.aliyuncs.com/images/e8f49c4eed41eb0b10f1e9029d1340e-removebg-preview.png" height="50" border="0"></a>
+                </div>
+                <div>
+                    <div style="font-size: 14px; color: #bddaff; margin-top: 17px;">客户名称：${username}</div>
+                    <div style="height: 30px; color: #006eff; line-height: 30px; padding: 0 10px; background: #FFFFFF; position: absolute; bottom: 0px; right: 0px;">7*24h 服务热线：0337-3221242</div>
+                </div>
+            </div>
+
+            <div style="background: #fff; padding: 0 15px; padding-bottom: 50px; padding-top: 10px">
+                <div style="margin-top: 30px;">
+                    <div><span style="font-size: 16px; font-weight: bold; position: relative; top: -4px;">尊敬的${username},</span></div>
+                        <div style="line-height: 24px; margin-top: 10px;">
+                        <p style="text-indent: 34px;">感谢您选择在我们的网站购买产品/服务。我们很高兴地通知您，您最近订购的货物已成功交付,请确认收到。</p>
+                        </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <div><span style="font-size: 16px; font-weight: bold; position: relative; top: -4px;">订单信息</span></div>
+                    <table style="width: 100%; border-spacing: 0px; border-collapse: collapse; border: none; margin-top: 20px;">
+                        <tbody>
+                        <tr style="height: 40px; background: #F6F6F6;">
+                            <th style="border: 1px solid #DBDBDB; color: #666666; font-size: 14px; font-weight: normal; text-align: center; padding-left: 14px;">订单编号</th>
+                            <th style="border: 1px solid #DBDBDB; color: #666666; font-size: 14px; font-weight: normal; text-align: center; padding-left: 14px;">商品名称</th>
+                            <th style="border: 1px solid #DBDBDB; color: #666666; font-size: 14px; font-weight: normal; text-align: center; padding-left: 14px;">到货时间</th>
+                        </tr>
+                        <tr style="height: 40px;">
+                            <td style="border: 1px solid #DBDBDB; font-size: 14px; font-weight: normal; text-align: center; padding-left: 14px;">${orderId}</td>
+                            <td style="border: 1px solid #DBDBDB; font-size: 14px; font-weight: normal; text-align: center; padding-left: 14px;">${productName}</td>
+                            <td style="border: 1px solid #DBDBDB; font-size: 14px; font-weight: normal; text-align: center; padding-left: 14px;"><span style="border-bottom: 1px dashed rgb(204, 204, 204); position: relative;" t="5" times="">${time}</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div style="margin-top: 30px;"><span style="font-size: 14px; font-weight: bold;">温馨提示</span>
+                    <div style="line-height: 24px; margin-top: 10px;">
+                        <div>商品如有任何问题，欢迎通过热线电话联系我们
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <table class="responsive-table" style="text-size-adjust: 100%; margin-top: 18px; border-collapse: collapse !important; width: 100%;" border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+        <tr style="padding: 0px; margin: 0px; font-size: 0px; line-height: 0;">
+            <td style="font-size: 12px; -webkit-font-smoothing: subpixel-antialiased; text-size-adjust: 100%;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="font-size: 12px; -webkit-font-smoothing: subpixel-antialiased; text-size-adjust: 100%;" align="center" valign="top">
+                <p style="line-height: 20.4px; text-size-adjust: 100%; font-family: 'Microsoft YaHei'!important; padding: 0px !important; margin: 0px !important; color: #7e8890 !important;"><span class="appleLinks">邮件由系统自动发送，请勿直接回复本邮件！</span></p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
