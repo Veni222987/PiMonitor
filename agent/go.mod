@@ -4,7 +4,7 @@ go 1.22.2
 
 require github.com/shirou/gopsutil/v3 v3.24.3
 
-require github.com/Veni222987/pimetric v0.0.11
+require github.com/Veni222987/pimetric v0.1.3
 
 require (
 	github.com/go-ole/go-ole v1.2.6 // indirect

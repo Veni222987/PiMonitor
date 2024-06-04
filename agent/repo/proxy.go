@@ -6,37 +6,25 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 	"time"
 
 	"github.com/Veni222987/pimetric"
-	"github.com/Veni222987/pimetric/api"
-	"github.com/Veni222987/pimetric/historgram"
+	"github.com/Veni222987/pimetric/pimstore"
 )
 
 var (
 	url string = "http://120.77.76.40:8000/api/v1/agents/services/info"
 )
 
-func init() {
-	pimetric.RegisterHistogram(&historgram.Histogram{
-		Name:  "http_request_time",
-		Help:  "http request time",
-		Type:  api.MetricTypeHistogram,
-		Value: make([]float64, 0),
-	})
-}
+var PIM_AGENT_ID = os.Getenv("PIM_AGENT_ID")
+var PIM_AGENT_TOKEN = os.Getenv("PIM_AGENT_TOKEN")
 
 // 这里不共用client是为了能够实现真正的并发
 func sendBytes(bts []byte) error {
 	start := time.Now()
 	defer func() {
-		if timeArr, ok := pimetric.GetHistogram("http_request_time").GetValue().([]float64); ok {
-			timeArr = append(timeArr, float64(time.Since(start).Milliseconds()))
-			pimetric.GetHistogram("http_request_time").Value = timeArr
-		} else {
-			log.Println("type assertion error")
-		}
+		pimstore.HistogramOf("send_data_duration").AddPoint(float64(time.Since(start).Milliseconds()))
 	}()
 	reader := bytes.NewReader(bts)
 	client := &http.Client{}
@@ -46,6 +34,7 @@ func sendBytes(bts []byte) error {
 		return err
 	}
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", PIM_AGENT_TOKEN)
 	res, err := client.Do(req)
 	if err != nil {
 		log.Println(err)
@@ -61,15 +50,15 @@ func sendBytes(bts []byte) error {
 }
 
 // UploadPerformance 上传性能数据
-func UploadPerformance(id int, pfmc *entity.Performance) error {
+func UploadPerformance(pfmc *entity.Performance) error {
 	// 组装measurement数据
 	data := entity.Measurement{
-		Measurement: "performance_" + strconv.Itoa(id),
+		Measurement: "performance_" + PIM_AGENT_ID,
 		Precision:   "S",
 		Points: []entity.Point{
 			{
 				Tag: map[string]string{
-					"id": strconv.Itoa(id),
+					"id": PIM_AGENT_ID,
 				},
 				Field: map[string]interface{}{
 					"cpu_percent":    pfmc.CPUPercent,
@@ -95,32 +84,45 @@ func UploadPerformance(id int, pfmc *entity.Performance) error {
 	return nil
 }
 
-func UploadMetrics(id int, metrics *entity.Metrics) error {
+func UploadMetrics(metrics []*pimetric.Metricx) error {
 	data := make([]entity.Measurement, 0)
-	for appname, metric := range metrics.MetricsMap {
-		if metricMap, ok := metric.(map[string]any); ok {
-			measurement := entity.Measurement{
-				Measurement: appname + "_" + strconv.Itoa(id),
-				Precision:   "S",
-				Points:      make([]entity.Point, 0),
-			}
-			for tag, detailMap := range metricMap {
-				if detailMap, ok := detailMap.(map[string]any); ok {
-					measurement.Points = append(measurement.Points, entity.Point{
-						Tag:       map[string]string{"metric_type": tag},
-						Field:     detailMap,
-						Timestamp: metrics.Timestamp,
-					})
-				} else {
-					println("detailMap type assertion error")
-				}
-			}
-			data = append(data, measurement)
-		} else {
-			log.Println("metricMap type assertion error")
+	for _, appMetrics := range metrics {
+		m := entity.Measurement{
+			Measurement: appMetrics.AppName + "_" + PIM_AGENT_ID,
+			Precision:   "S",
+			Points:      make([]entity.Point, 0),
 		}
+		// TODO 这里可以改并行
+		// 处理counter
+		for k, v := range appMetrics.CounterMap {
+			m.Points = append(m.Points, entity.Point{
+				Tag:       map[string]string{"metric_type": "counter"},
+				Field:     map[string]interface{}{k: v.GetValue()},
+				Timestamp: v.GetTimestamp(),
+			})
+		}
+		// 处理gauge
+		for k, v := range appMetrics.GaugeMap {
+			m.Points = append(m.Points, entity.Point{
+				Tag:       map[string]string{"metric_type": "gauge"},
+				Field:     map[string]interface{}{k: v.GetValue()},
+				Timestamp: v.GetTimestamp(),
+			})
+		}
+		// 处理histogram
+		for k, v := range appMetrics.HistogramMap {
+			for _, histoPoint := range v.Value {
+				m.Points = append(m.Points, entity.Point{
+					Tag:       map[string]string{"metric_type": "histogram"},
+					Field:     map[string]interface{}{k: histoPoint.Number},
+					Timestamp: histoPoint.Timestamp,
+				})
+			}
+		}
+		data = append(data, m)
 	}
-	log.Printf("Measurements: %v", data)
+
+	log.Printf("Measurements: %+v", data)
 	jsonBytes, err := json.Marshal(data)
 	if err != nil {
 		log.Printf("fail to encode data:%v", err)
@@ -134,7 +136,17 @@ func UploadMetrics(id int, metrics *entity.Metrics) error {
 }
 
 // Register 注册机器，上传基础信息
-func Register(bts []byte) error {
-	// TODO 上传基础信息
+func Register(info entity.ComputerInfo) error {
+	log.Println("AGENT_ID:" + PIM_AGENT_ID)
+	log.Println("AGENT_TOKEN:" + PIM_AGENT_TOKEN)
+	jsonBytes, err := json.Marshal(info)
+	if err != nil {
+		log.Printf("fail to encode data:%v", err)
+		return err
+	}
+	if err := sendBytes(jsonBytes); err != nil {
+		log.Printf("fail to send data,%v", err)
+		return err
+	}
 	return nil
 }

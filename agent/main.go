@@ -5,6 +5,7 @@ import (
 	"Agent/logic/baseinfo"
 	"Agent/logic/metric"
 	"Agent/logic/performance"
+	"Agent/repo"
 	"context"
 	"log"
 	"net/http"
@@ -23,13 +24,18 @@ func main() {
 		http.ListenAndServe(":54321", nil)
 		//pimetric.ExportMetrics("agent")
 	}()
-
 	// 主函数创建一个context，传入三个协程中
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
 		info, err := baseinfo.GetComputerInfoWithContext(ctx)
 		if err != nil {
+			cancel()
+		}
+		// TODO 注册上传基础信息
+		err = repo.Register(*info)
+		if err != nil {
+			log.Println("register error")
 			cancel()
 		}
 		log.Printf("computer base info: %#v", info)
