@@ -1,5 +1,7 @@
 package org.pi.server.controller;
 
+import org.jetbrains.annotations.NotNull;
+import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.service.InformationService;
@@ -24,12 +26,15 @@ public class PerformanceController {
     private InformationService informationService;
 
     @GetMapping
-    public Result<Object> getPerformance(@RequestParam String agentID, @RequestParam Long startTime, @DateTimeFormat Long endTime) {
-        log.debug("agentID:{},startTime:{},endTime:{}", agentID, startTime, endTime);
+    public Result<Object> getPerformance(@GetAttribute("userID") @NotNull String userID, @RequestParam String agentID, @RequestParam Long startTime, @DateTimeFormat Long endTime) {
         if (startTime >= endTime) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         }
-        Map<String, List<Map<String, Object>>> performances = informationService.getPerformance(agentID, startTime, endTime);
-        return ResultUtils.success(performances);
+        try {
+            Map<String, List<Map<String, Object>>> performances = informationService.getPerformance(userID, agentID, startTime, endTime);
+            return ResultUtils.success(performances);
+        } catch (Exception e) {
+            return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
+        }
     }
 }
