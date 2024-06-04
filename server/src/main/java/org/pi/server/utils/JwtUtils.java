@@ -1,13 +1,20 @@
 package org.pi.server.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.pi.server.common.Result;
+import org.pi.server.common.ResultCode;
+import org.pi.server.common.ResultUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -84,5 +91,28 @@ public class JwtUtils {
                 .setSigningKey(secret) // 设置签名秘钥(会根据秘钥推断签名算法)
                 .parseClaimsJws(jwt)
                 .getBody();
+    }
+
+    public static boolean parseJWT(String jwt, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try{
+            Claims claims = JwtUtils.parseJWT(jwt);
+            claims.forEach(request::setAttribute);
+        } catch (ExpiredJwtException e) {
+            Result<Object> error = ResultUtils.error(ResultCode.TOKEN_EXPIRED);
+            String result = JSONObject.toJSONString(error);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            response.getWriter().write(result);
+            return false;
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            Result<Object> error = ResultUtils.error(ResultCode.PARAMS_ERROR);
+            String result = JSONObject.toJSONString(error);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            response.getWriter().write(result);
+            return false;
+        }
+        return true;
     }
 }
