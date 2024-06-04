@@ -36,6 +36,7 @@ public class CommonInterceptor implements HandlerInterceptor {
         // 3.判断令牌是否存在。如果不存在，返回错误结果
         if(!StringUtils.hasLength(jwt)){
             Result<Object> error = ResultUtils.error(ResultCode.NO_AUTH_ERROR);
+            response.setStatus(error.getCode()/100);
             // 手动转换 对象--json ------> 阿里巴巴fastJSON
             String result = JSONObject.toJSONString(error);
             response.setCharacterEncoding("UTF-8");
