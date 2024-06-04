@@ -28,17 +28,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 登录
         // account 是邮箱
         User user = null;
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (account.contains("@")) {
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("email", account);
-            queryWrapper.last("LIMIT 1");
-            user = userMapper.selectOne(queryWrapper);
         } else { // account 是手机号
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("phone_number", account);
-            queryWrapper.last("LIMIT 1");
-            user = userMapper.selectOne(queryWrapper);
         }
+        queryWrapper.last("LIMIT 1");
+        user = userMapper.selectOne(queryWrapper);
         if ( user == null ) {
             return -1;
         } else if (!user.getPassword().equals(password)) {

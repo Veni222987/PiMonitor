@@ -23,39 +23,15 @@ public class UserController {
 
     @GetMapping("/login")
     public Result<Object> login(@RequestParam String account, @RequestParam String password) {
-        log.debug("account:{},password:{}", account, password);
         long id = userService.login(account, password);
-        if (id == -1) {
+        if (id == -1) { // 账号不存在
             return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
-        } else if (id == -2) {
+        } else if (id == -2) { // 密码错误
             return ResultUtils.error(ResultCode.PASSWORD_ERROR);
         }
         // 生成jwt
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userID", id);
-        String jwt = JwtUtils.tokenHead + JwtUtils.generateJwt(claims);
-        Map<String, Object> map = new HashMap<>();
-        map.put("jwt", jwt);
-        return ResultUtils.success(map);
-    }
-
-    @PostMapping("/register")
-    public Result<Object> register(@GetAttribute("phoneNumber") String phoneNumber, @GetAttribute("email") String email, @RequestBody User user) {
-        log.debug("phoneNumber:{},email:{},user:{}", phoneNumber, email, user);
-        if (phoneNumber != null) {
-            user.setPhoneNumber(phoneNumber);
-            user.setEmail(null);
-        } else if (email != null) {
-            user.setEmail(email);
-            user.setPhoneNumber(null);
-        }
-        if (phoneNumber == null && email == null) {
-            return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
-        }
-        long id = userService.insertUser(user);
-        // 生成jwt
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userID", id);
+        claims.put("userID", id + "");
         String jwt = JwtUtils.tokenHead + JwtUtils.generateJwt(claims);
         Map<String, Object> map = new HashMap<>();
         map.put("jwt", jwt);
@@ -74,55 +50,16 @@ public class UserController {
         }
         if (result) {
             return ResultUtils.success();
-        } else {
+        } else { // 账号不存在
             return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
         }
     }
 
-    @GetMapping("/exists")
-    public Result<Object> exists(@RequestParam String type, @RequestParam String value) {
-        if (!type.equals("phone_number") && !type.equals("email")) {
-            return ResultUtils.error(ResultCode.PARAMS_ERROR);
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("isExists", userService.exists(type, value));
-        return ResultUtils.success(map);
-    }
-
     @PostMapping("/modify")
-    public Result<Object> modify(@GetAttribute("userID") Integer userID, @RequestBody User user) {
-        log.debug("userID:{},user:{}", userID, user);
-        //TODO 修改用户信息
-        if (!userService.modify(userID, user)) {
+    public Result<Object> modify(@GetAttribute("userID") String userID, @RequestBody User user) {
+        if (!userService.modify(Long.parseLong(userID), user)) {
             return ResultUtils.error(ResultCode.SYSTEM_ERROR);
         }
         return ResultUtils.success();
     }
-
-
-
-    @GetMapping("/{userID}/agents")
-    public Result<Object> getAgents(@PathVariable String userID) {
-        log.debug("userID:{}", userID);
-        //TODO 查询用户
-        return ResultUtils.success();
-    }
-
-
-    @PostMapping("/{userID}/agents")
-    public Result<Object> postAgents(@PathVariable String userID, @RequestParam String agentID) {
-        log.debug("userID:{},agentID:{}", userID, agentID);
-        //TODO 用户添加agent
-
-        return ResultUtils.success();
-    }
-
-    @DeleteMapping("/{userID}/agents")
-    public Result<Object> deleteAgents(@PathVariable String userID, @RequestParam String agentID) {
-        log.debug("userID:{},agentID:{}", userID, agentID);
-        //TODO 用户删除agent
-
-        return ResultUtils.success();
-    }
-
 }
