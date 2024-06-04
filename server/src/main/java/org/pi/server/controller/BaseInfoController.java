@@ -2,6 +2,7 @@ package org.pi.server.controller;
 
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
 import org.pi.server.model.entity.Host;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.pi.server.common.Result;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -26,33 +30,39 @@ public class BaseInfoController {
      * @return
      */
     @GetMapping
-    public Result<Object> getComputerInfo(@RequestParam String agentID) {
+    public Result<Object> getComputerInfo(@GetAttribute("userID") @NotNull String userID, @RequestParam String agentID) {
         log.debug("agentID: {}", agentID);
         if (agentID == null) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         }
-        Host host = baseInfoService.getById(agentID);
+        Host host = baseInfoService.getComputerInfo(userID, agentID);
         if (host == null) {
-            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+            return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
         }
         return ResultUtils.success(host);
     }
 
     /**
-     * 提交主机信息
+     * 注册主机
      * @param host
      * @return
      */
     @PostMapping
-    public Result<Long> postComputerInfo(@NotNull @RequestBody Host host) {
+    public Result<Object> postComputerInfo(@GetAttribute("teamID") @NotNull Integer teamID, @NotNull @RequestBody Host host) {
         log.debug(host.toString());
+        if (teamID == null) {
+            return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
+        }
+        host.setTeamId(teamID);
         long id = baseInfoService.postComputerInfo(host);
         if (id == 0) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         } else if (id == -1) {
             return ResultUtils.error(ResultCode.OPERATION_ERROR);
         }
-        return ResultUtils.success(id);
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        return ResultUtils.success(map);
     }
 
     /**
@@ -62,14 +72,14 @@ public class BaseInfoController {
      * @return
      */
     @PutMapping
-    public Result<Object> putComputerInfo(@RequestParam String agentID, @RequestParam String hostname) {
+    public Result<Object> putComputerInfo(@GetAttribute("userID") @NotNull String userID, @RequestParam String agentID, @RequestParam String hostname) {
         log.debug("agentID: {}, hostName: {}", agentID, hostname);
         if (agentID == null || hostname == null) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         }
-        boolean b = baseInfoService.putComputerInfo(agentID, hostname);
+        boolean b = baseInfoService.putComputerInfo(userID ,agentID, hostname);
         if (!b) {
-            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+            return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
         }
         return ResultUtils.success();
     }
