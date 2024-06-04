@@ -18,6 +18,6 @@ public class Team {
     private Integer id;
     private LocalDateTime createTime;
     private String name;
-    private String owner;
+    private Long owner;
     private String token;
 }

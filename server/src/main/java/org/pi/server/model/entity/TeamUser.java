@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class TeamUser {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-    private Integer teamID;
-    private Long userID;
+    private Integer teamId;
+    private Long userId;
 }

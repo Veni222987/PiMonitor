@@ -84,6 +84,6 @@ public class Host {
     /**
      * 团队id
      */
-    private Integer teamID;
+    private Integer teamId;
 
 }
