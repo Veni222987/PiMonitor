@@ -9,11 +9,12 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/Veni222987/pimetric"
 )
 
-func Scan(pArr []int) []map[string]interface{} {
-	totalMetrics := make([]map[string]interface{}, 0)
-	lock := &sync.Mutex{}
+func Scan(pArr []int) []*pimetric.Metricx {
+	rsp := make([]*pimetric.Metricx, 0)
 	wg := &sync.WaitGroup{}
 	// 设置等待的任务数量
 	for _, port := range pArr {
@@ -46,19 +47,16 @@ func Scan(pArr []int) []map[string]interface{} {
 				return
 			}
 			// 解析返回结果为map
-			var result map[string]interface{}
+			var result *pimetric.Metricx
 			err = json.Unmarshal(body, &result)
 			if err != nil {
 				log.Printf("unmarshal body error: %v", err)
 				return
 			}
-			lock.Lock()
-			defer lock.Unlock()
-			totalMetrics = append(totalMetrics, result)
+			rsp = append(rsp, result)
 		}(port)
 	}
 	// 防止网络请求超时，设置1秒timeout
 	parautil.WaitGroupWithTimeout(wg, time.Second)
-	log.Printf("totalMetrics: %+v", totalMetrics)
-	return totalMetrics
+	return rsp
 }

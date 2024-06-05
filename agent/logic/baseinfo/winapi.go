@@ -22,7 +22,6 @@ func GetTotalDisk() (uint64, error) {
 		uintptr(unsafe.Pointer(&totalBytes)),
 		uintptr(unsafe.Pointer(nil)),
 	)
-
-	totalSize = totalBytes
+	totalSize = uint64(totalBytes)
 	return totalSize, nil
 }

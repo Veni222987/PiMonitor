@@ -42,16 +42,25 @@ func getDisk() (uint64, error) {
 	return size, nil
 }
 
-func getNetCard() ([]string, error) {
+func getNetCard() ([]string, string, error) {
 	interfaces, err := net.Interfaces()
 	if err != nil {
-		return nil, fmt.Errorf("get net card error: %s", err)
+		return nil, "", fmt.Errorf("get net card error: %s", err)
 	}
+
+	var macAddr string
+	for _, iface := range interfaces {
+		if iface.HardwareAddr != "" {
+			macAddr = iface.HardwareAddr
+			break
+		}
+	}
+
 	ret := make([]string, 0)
 	for _, interf := range interfaces {
 		ret = append(ret, interf.Name)
 	}
-	return ret, nil
+	return ret, macAddr, nil
 }
 
 // GetComputerInfoWithContext 获取计算机基础信息，如果基础信息都获取不到，由context终止其他协程
@@ -69,29 +78,26 @@ func GetComputerInfo() (*entity.ComputerInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	memory, err := getMemory()
 	if err != nil {
 		return nil, err
 	}
-
 	diskTotal, err := getDisk()
 	if err != nil {
 		return nil, err
 	}
-
-	netcard, err := getNetCard()
+	netcard, mac, err := getNetCard()
 	if err != nil {
 		return nil, err
 	}
-
+	// 获取网卡MAC地址
 	computerInfo = &entity.ComputerInfo{
+		Mac:         mac,
 		CPU:         cpuInfo,
 		NetworkCard: netcard,
 		Disk:        diskTotal,
 		Memory:      memory,
 		OS:          runtime.GOOS,
 	}
-
 	return computerInfo, nil
 }
