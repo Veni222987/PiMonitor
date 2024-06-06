@@ -4,11 +4,11 @@ import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xkcoding.justauth.AuthRequestFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.request.AuthRequest;
-import org.apache.http.auth.AUTH;
 import org.pi.server.mapper.AuthMapper;
 import org.pi.server.model.entity.Auth;
 import org.pi.server.model.entity.User;
@@ -18,15 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author hu1hu
+ */
 @Service
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AuthServiceImpl implements AuthService {
-    @Autowired
-    private AuthRequestFactory factory;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private AuthMapper authMapper;
+    private final AuthRequestFactory factory;
+    private final UserService userService;
+    private final AuthMapper authMapper;
 
     /**
      * 登录
@@ -47,11 +48,12 @@ public class AuthServiceImpl implements AuthService {
         Auth auth = new Auth();
         auth.setType(type);
         long userID = -1;
-        if (split.length == 1) { // 登录或注册
+        if (split.length == 1) {
+            // 登录或注册
             User user = new User();
-            if (type.equals("gitee") || type.equals("github")) {
+            if ("gitee".equals(type) || "github".equals(type)) {
                 log.info(jsonObject.toString());
-                if (!jsonObject.getString("code").equals("2000")) {
+                if (!"2000".equals(jsonObject.getString("code"))) {
                     return -1;
                 }
                 user.setUsername(jsonObject.getJSONObject("data").getString("username"));
@@ -60,7 +62,8 @@ public class AuthServiceImpl implements AuthService {
                 auth.setOpenId(jsonObject.getJSONObject("data").getString("uuid"));
                 QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("open_id", auth.getOpenId());
-                if(authMapper.exists(queryWrapper)) { // 注册过了
+                if(authMapper.exists(queryWrapper)) {
+                    // 注册过了
                     userID = authMapper.selectOne(queryWrapper).getUserId();
                 } else { // 未注册
                     userID = userService.insertUser(user);
@@ -72,10 +75,12 @@ public class AuthServiceImpl implements AuthService {
             userID = Long.parseLong(split[0]);
             QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("user_id", userID).eq("type", type);
-            if (authMapper.exists(queryWrapper)) { // 已绑定
+            if (authMapper.exists(queryWrapper)) {
+                // 已绑定
                 return -2;
-            } else { // 未绑定
-                if (type.equals("gitee") || type.equals("github")) {
+            } else {
+                // 未绑定
+                if ("gitee".equals(type) || "github".equals(type)) {
                     auth.setOpenId(jsonObject.getJSONObject("data").getString("uuid"));
                     auth.setUserId(userID);
                     authMapper.insert(auth);
@@ -85,6 +90,12 @@ public class AuthServiceImpl implements AuthService {
         return userID;
     }
 
+    /**
+     * 解绑
+     * @param userID 用户ID
+     * @param type 第三方登录类型 gitee github
+     * @return 是否解绑成功
+     */
     @Override
     public boolean unbind(String userID, String type) {
         QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();

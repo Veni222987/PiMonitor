@@ -6,6 +6,7 @@ import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,14 +21,19 @@ import java.util.Map;
 
 /**
  * InfluxDB 操作
+ * @author hu1hu
  */
 @Repository
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class InfluxDBRepo {
+    private final InfluxDBClient influxDB;
 
-    @Autowired
-    private InfluxDBClient influxDB;
-
+    /**
+     * 写入数据
+     * @param data 数据
+     * @return 是否成功
+     */
     public boolean write(String data) {
         try {
             WriteApiBlocking writeApi = influxDB.getWriteApiBlocking();
@@ -39,6 +45,15 @@ public class InfluxDBRepo {
         }
     }
 
+    /**
+     * 写入数据
+     * @param measurement 表名
+     * @param tags 标签
+     * @param fields 字段
+     * @param timestamp 时间戳
+     * @param precision 时间精度
+     * @return 是否成功
+     */
     public boolean write(String measurement, Map<String, String> tags, Map<String, Object> fields, long timestamp, WritePrecision precision) {
         try {
             Point point = Point.measurement(measurement)
@@ -46,23 +61,32 @@ public class InfluxDBRepo {
                     .addFields(fields)
                     .time(timestamp, precision);
             WriteApiBlocking writeApi = influxDB.getWriteApiBlocking();
-            writeApi.writePoint(point);
-            return true;
+            try {
+                writeApi.writePoint(point);
+                return true;
+            } catch (Exception e) {
+                log.warn("数据异常", e);
+                return true;
+            }
         } catch (Exception e) {
             log.error("InfluxDB 写入数据失败", e);
             return false;
         }
     }
 
-    // 通用查询
+    /**
+     * 查询数据
+     * @param flux Flux 查询语句
+     * @return 查询结果
+     */
     public List<FluxTable> query(String flux) {
         return influxDB.getQueryApi().query(flux);
     }
 
     /**
      * 解析查询结果
-     * @param tables
-     * @return
+     * @param tables 查询结果
+     * @return 解析后的结果
      */
     public Map<String, List<Map<String, Object>>> parse(List<FluxTable> tables) {
         Map<String, List<Map<String, Object>>> result = new HashMap<>();
@@ -75,6 +99,7 @@ public class InfluxDBRepo {
                     result.put(field, new LinkedList<>());
                 } else {
                     assert time != null;
+                    assert value != null;
                     result.get(field).add(Map.of("time", time.getLong(ChronoField.INSTANT_SECONDS), "value", value));
                 }
             });

@@ -8,12 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.aliyun.dysmsapi20170525.Client;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author hu1hu
+ */
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AliSmsUtils {
     private final AliyunConfig aliyunConfig;
 
+    /**
+     * 发送短信
+     * @param code 验证码
+     * @param toAddress 手机号
+     * @throws Exception 异常
+     */
     public void send(String code,String toAddress) throws Exception{
         com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config()
                 .setAccessKeyId(aliyunConfig.getAccessKeyId())

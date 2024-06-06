@@ -1,6 +1,7 @@
 package org.pi.server.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.pi.server.model.entity.User;
 import org.pi.server.service.AuthCodeService;
@@ -16,17 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author hu1hu
+ */
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AuthCodeServiceImpl implements AuthCodeService {
-    
-    @Autowired
-    private RedisService redisService;
-    @Autowired
-    private UserService userService;
+    private final RedisService redisService;
+    private final UserService userService;
 
     /**
      * 登录或注册验证码
-     * @param map
+     * @param map 请求参数
      * @return String jwt：成功  “-1”： 验证码不存在  “-2”： 验证码错误  “-3”：系统错误
      */
     @Override
@@ -35,41 +37,48 @@ public class AuthCodeServiceImpl implements AuthCodeService {
         String account = (String) map.get("account");
         String code = redisService.get(account);
 
-        if (code == null) { // 验证码不存在
+        if (code == null) {
+            // 验证码不存在
             return "-1";
-        } else if (code.equals(map.get("code"))) { // 验证码正确
-            long userID;
-            if (account.contains("@")) { // 邮箱
-                if (!userService.exists("email", account)) { // 未注册
+        } else if (code.equals(map.get("code"))) {
+            // 验证码正确
+            long userId;
+            // 邮箱
+            if (account.contains("@")) {
+                // 未注册
+                if (!userService.exists("email", account)) {
                     User user = new User();
                     user.setEmail(account);
                     user.setPassword(PasswordUtils.encryptPassword("pim123456"));
                     user.setUsername("pim_" + CodeUtils.generateVerifyCode(6));
                     userService.insertUser(user);
                 }
-                userID = userService.getIDByEmail(account);
-            } else { // 手机号
-                if (!userService.exists("phone_number", account)) { // 未注册
+                userId = userService.getIDByEmail(account);
+            } else {
+                // 手机号
+                // 未注册
+                if (!userService.exists("phone_number", account)) {
                     User user = new User();
                     user.setPhoneNumber(account);
                     user.setPassword(PasswordUtils.encryptPassword("pim123456"));
                     user.setUsername("pim_" + CodeUtils.generateVerifyCode(6));
                     userService.insertUser(user);
                 }
-                userID = userService.getIDByPhoneNumber(account);
+                userId = userService.getIDByPhoneNumber(account);
             }
             // 认证成功 下发jwt
             Map<String, Object> claims = new HashMap<>();
-            claims.put("userID", userID + "");
+            claims.put("userID", userId + "");
             return JwtUtils.generateJwt(claims);
-        } else { // 验证码错误
+        } else {
+            // 验证码错误
             return "-2";
         }
     }
 
     /**
      * 重置密码验证码
-     * @param map
+     * @param map 请求参数
      * @return String jwt：成功  “-1”： 验证码
      */
     @Override
@@ -77,17 +86,20 @@ public class AuthCodeServiceImpl implements AuthCodeService {
         String account = (String) map.get("account");
         String code = redisService.get(account);
 
-        if (code == null) { // 验证码不存在
+        if (code == null) {
+            // 验证码不存在
             return "-1";
-        } else if (code.equals(map.get("code"))) { // 验证码正确
-            long userID;
+        } else if (code.equals(map.get("code"))) {
+            // 验证码正确
             Map<String, Object> claims = new HashMap<>();
-            if (account.contains("@")) { // 邮箱
+            if (account.contains("@")) {
+                // 邮箱
                 claims.put("email", account);
             } else { // 手机号
                 claims.put("phoneNumber", account);
             }
-            return JwtUtils.generateJwt(claims, 60 * 30L); // 30分钟
+            // 30分钟过期
+            return JwtUtils.generateJwt(claims, 60 * 30L);
         } else { // 验证码错误
             return "-2";
         }
@@ -95,23 +107,27 @@ public class AuthCodeServiceImpl implements AuthCodeService {
 
     /**
      * 绑定手机号或邮箱
-     * @param userID
-     * @param map
+     * @param userId 用户id
+     * @param map 请求参数
      * @return String jwt：成功  “-1”： 验证码不存在  “-2”： 验证码错误  “-3”：系统错误
      */
     @Override
-    public String bind(String userID, Map<String, Object> map) {
+    public String bind(String userId, Map<String, Object> map) {
         String account = (String) map.get("account");
         String code = redisService.get(account);
 
-        if (code == null) { // 验证码不存在
+        if (code == null) {
+            // 验证码不存在
             return "-1";
-        } else if (code.equals(map.get("code"))) { // 验证码正确
+        } else if (code.equals(map.get("code"))) {
+            // 验证码正确
             UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-            if (account.contains("@")) { // 绑定邮箱
-                updateWrapper.eq("id", userID).set("email", account);
-            } else { // 绑定手机号
-                updateWrapper.eq("id", userID).set("phone_number", account);
+            if (account.contains("@")) {
+                // 绑定邮箱
+                updateWrapper.eq("id", userId).set("email", account);
+            } else {
+                // 绑定手机号
+                updateWrapper.eq("id", userId).set("phone_number", account);
             }
             boolean update = userService.update(updateWrapper);
             if (!update) {
@@ -119,7 +135,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
             }
             // 认证成功 下发jwt
             Map<String, Object> claims = new HashMap<>();
-            claims.put("userID", userID);
+            claims.put("userID", userId);
             return JwtUtils.generateJwt(claims);
         } else {
             return "-2";

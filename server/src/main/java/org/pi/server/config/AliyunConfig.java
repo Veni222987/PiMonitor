@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.aliyun.dysmsapi20170525.Client;
 
+/**
+ * @author hu1hu
+ */
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "aliyun")
@@ -27,7 +30,7 @@ public class AliyunConfig {
         private String host;
         private long expireTime = 3600;
         public String getHost() {
-            return "http://" + bucketName + "." + endpoint;
+            return "https://" + bucketName + "." + endpoint;
         }
     }
 
@@ -46,11 +49,18 @@ public class AliyunConfig {
         private String templateCode;
     }
 
+    /**
+     * @return  {@link OSS}
+     */
     @Bean
-    public OSS createOSSClient() {
+    public OSS createOssClient() {
         return new OSSClientBuilder().build(oss.getEndpoint(), accessKeyId, accessKeySecret);
     }
 
+    /**
+     * @return  {@link com.aliyun.dysmsapi20170525.Client}
+     * @throws Exception 异常
+     */
     @Bean
     public Client createSmsClient() throws Exception {
         com.aliyun.teaopenapi.models.Config config = new com.aliyun.teaopenapi.models.Config()

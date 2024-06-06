@@ -5,6 +5,7 @@ import lombok.Getter;
 
 /**
  * 自定义状态码,前三位为HTTP转态码，后两位为扩展状态码
+ * @author hu1hu
  */
 @Getter
 @AllArgsConstructor
@@ -32,7 +33,7 @@ public enum ResultCode {
     private final int code;
 
     /**
-     * 信息
+     * 描述信息
      */
     private final String message;
 

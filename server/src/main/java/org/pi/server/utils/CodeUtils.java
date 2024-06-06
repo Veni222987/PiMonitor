@@ -10,7 +10,7 @@ public class CodeUtils {
     /**
      * 使用系统默认字符源生成验证码
      * @param verifySize    验证码长度
-     * @return
+     * @return 验证码
      */
     @NotNull
     public static String generateVerifyCode(int verifySize){
@@ -21,11 +21,11 @@ public class CodeUtils {
      * 使用指定源生成验证码
      * @param verifySize    验证码长度
      * @param sources   验证码字符源
-     * @return
+     * @return 验证码
      */
     @NotNull
     public static String generateVerifyCode(int verifySize, String sources){
-        if(sources == null || sources.length() == 0){
+        if(sources == null || sources.isEmpty()){
             sources = VERIFY_CODES;
         }
         int codesLen = sources.length();

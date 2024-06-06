@@ -3,7 +3,6 @@ package org.pi.server.controller;
 import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.apache.bcel.classfile.Code;
 import org.jetbrains.annotations.NotNull;
 import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.Result;
@@ -19,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author hu1hu
+ */
 @Slf4j
 @RestController
 @RequestMapping("/v1/common")
@@ -33,11 +35,11 @@ public class CommonController {
 
     /**
      * 获取oss上传签名
-     * @return
-     * @doc https://help.aliyun.com/zh/oss/user-guide/form-upload?spm=a2c4g.11186623.0.i130
+     * @return ResultCode.SUCCESS 返回签名 ResultCode.SYSTEM_ERROR 系统错误(数据库)
+     * @see <a href="https://help.aliyun.com/zh/oss/user-guide/form-upload?spm=a2c4g.11186623.0.i130">oss签名</a>
      */
     @GetMapping("/aliyun/oss/signature")
-    public Result generatePostSignature(@RequestParam String dir) {
+    public Result<Object> generatePostSignature(@RequestParam @NotNull String dir) {
         JSONObject signature;
         try {
             signature = aliyunOssService.generatePostSignature(dir);
@@ -48,12 +50,12 @@ public class CommonController {
     }
 
     /**
-     * 获取oss url
-     * @param fileName
-     * @return
+     * 获取oss 临时 url
+     * @param fileName 文件路径
+     * @return ResultCode.SYSTEM_ERROR 系统错误 ResultCode.SUCCESS 成功
      */
     @GetMapping("/aliyun/oss/signedURL")
-    public Result generateSignedURL(@RequestParam String fileName) {
+    public Result<Object> generateSignedURL(@RequestParam @NotNull String fileName) {
         String signedUrl;
         try {
             signedUrl = aliyunOssService.generateSignedURL(fileName);
@@ -65,13 +67,13 @@ public class CommonController {
 
     /**
      * 发送邮件
-     * @param template
-     * @param toAddress
-     * @param map
-     * @return
+     * @param template 模板
+     * @param toAddress 收件人
+     * @param map 模板参数
+     * @return ResultCode.SUCCESS 成功 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("/aliyun/email")
-    public Result email(@RequestParam String template,@RequestParam String toAddress, @RequestBody Map<String, String> map) {
+    public Result email(@RequestParam @NotNull String template, @RequestParam @NotNull String toAddress, @RequestBody  @NotNull Map<String, String> map) {
         try {
             boolean email = userService.exists("email", toAddress);
             if (!email) {
@@ -87,8 +89,8 @@ public class CommonController {
 
     /**
      * 发送邮件验证码
-     * @param email
-     * @return
+     * @param email 邮箱
+     * @return ResultCode.SUCCESS 成功 ResultCode.REQUEST_TOO_FREQUENT 请求过于频繁 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("/aliyun/email/code")
     public Result emailCode(@RequestParam String email) {
@@ -114,11 +116,11 @@ public class CommonController {
 
     /**
      * 发送短信验证码
-     * @param phoneNumber
-     * @return
+     * @param phoneNumber 手机号码
+     * @return ResultCode.SUCCESS 成功 ResultCode.REQUEST_TOO_FREQUENT 请求过于频繁 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("aliyun/sms/code")
-    public Result smsCode(@RequestParam String phoneNumber) {
+    public Result smsCode(@RequestParam @NotNull String phoneNumber) {
         // 限制发送频率
         String s = redisService.get(phoneNumber);
         if (s != null) {
@@ -139,10 +141,10 @@ public class CommonController {
     /**
      * 聚合邮件短信发送验证码
      * @param account 手机号码或邮箱
-     * @return
+     * @return ResultCode.SUCCESS 成功 ResultCode.REQUEST_TOO_FREQUENT 请求过于频繁 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("/aliyun/code")
-    public Result<Object> sendCode( @RequestParam String account) {
+    public Result<Object> sendCode( @RequestParam @NotNull String account) {
         // 限制发送频率
         String s = redisService.get(account);
         if (s != null) {
@@ -177,26 +179,29 @@ public class CommonController {
     /**
      * 验证验证码
      * @param userID 用户ID
-     * @param requestMap type login/register/resetPassword/bind
-     * @return
+     * @param requestMap type loginOrRegister/resetPassword/bind
+     * @return ResultCode.SUCCESS 成功 ResultCode.PARAMS_ERROR 参数错误 ResultCode.NOT_FOUND_ERROR 未找到用户 ResultCode.VERIFY_CODE_ERROR 验证码错误 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("authCode")
     public Result<Object> authCode(@GetAttribute String userID, @NotNull @RequestBody Map<String,Object> requestMap) {
         String jwt = null;
-        if (requestMap.get("type").equals("loginOrRegister")) { // 登录或注册
+        if ("loginOrRegister".equals(requestMap.get("type"))) {
+            // 登录或注册
             jwt = authCodeService.loginOrRegisterAuthCode(requestMap);
-        } else if (requestMap.get("type").equals("resetPassword")) { // 重置密码
+        } else if ("resetPassword".equals(requestMap.get("type"))) {
+            // 重置密码
             jwt = authCodeService.resetPasswordAuthCode(requestMap);
-        } else if (requestMap.get("type").equals("bind")) { // 绑定手机号或邮箱
+        } else if ("bind".equals(requestMap.get("type"))) {
+            // 绑定手机号或邮箱
             jwt = authCodeService.bind(userID, requestMap);
         }
         if (jwt == null) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
-        } else if (jwt.equals("-1")) {
+        } else if ("-1".equals(jwt)) {
             return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
-        } else if (jwt.equals("-2")) {
+        } else if ("-2".equals(jwt)) {
             return ResultUtils.error(ResultCode.VERIFY_CODE_ERROR);
-        } else if (jwt.equals("-3")) {
+        } else if ("-3".equals(jwt)) {
             return ResultUtils.error(ResultCode.SYSTEM_ERROR);
         }
         Map<String, Object> map = new HashMap<>();
