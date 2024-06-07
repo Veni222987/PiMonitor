@@ -8,13 +8,19 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author hu1hu
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class InfluxDBPoints {
-    String measurement; // 测量点名称
-    WritePrecision precision; // 写入精度(NS、US、MS、S)
-    List<Point> points; // 测量点数据
+    // 测量点名称
+    String measurement;
+    // 写入精度(NS、US、MS、S)
+    WritePrecision precision;
+    // 测量点数据
+    List<Point> points;
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

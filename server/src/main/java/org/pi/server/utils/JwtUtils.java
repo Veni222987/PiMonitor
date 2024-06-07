@@ -1,6 +1,6 @@
 package org.pi.server.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * @author hu1hu
+ */
 @Component
 @Slf4j
 public class JwtUtils {
@@ -52,7 +55,7 @@ public class JwtUtils {
     /**
      * 生成JWT令牌
      * @param claims JWT第二部分负载 payload 中存储的内容
-     * @return
+     * @return JWT令牌
      */
     public static String generateJwt(Map<String, Object> claims) {
         return Jwts.builder()
@@ -68,7 +71,7 @@ public class JwtUtils {
      * 生成JWT令牌
      * @param claims JWT第二部分负载 payload 中存储的内容
      * @param expire 过期时间 单位秒
-     * @return
+     * @return JWT令牌
      */
     public static String generateJwt(Map<String, Object> claims, Long expire) {
         return Jwts.builder()
@@ -93,12 +96,21 @@ public class JwtUtils {
                 .getBody();
     }
 
+    /**
+     * 解析JWT令牌
+     * @param jwt JWT令牌
+     * @param request 请求
+     * @param response 响应
+     * @return 是否解析成功
+     * @throws IOException IO异常
+     */
     public static boolean parseJWT(String jwt, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try{
             Claims claims = JwtUtils.parseJWT(jwt);
             claims.forEach(request::setAttribute);
         } catch (ExpiredJwtException e) {
             Result<Object> error = ResultUtils.error(ResultCode.TOKEN_EXPIRED);
+            response.setStatus(error.getCode()/100);
             String result = JSONObject.toJSONString(error);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
@@ -107,6 +119,7 @@ public class JwtUtils {
         } catch (Exception e) {
             log.warn(e.getMessage());
             Result<Object> error = ResultUtils.error(ResultCode.PARAMS_ERROR);
+            response.setStatus(error.getCode()/100);
             String result = JSONObject.toJSONString(error);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");

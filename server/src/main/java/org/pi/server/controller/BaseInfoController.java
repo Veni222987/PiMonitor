@@ -2,6 +2,7 @@ package org.pi.server.controller;
 
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.ResultCode;
@@ -17,25 +18,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * @author huhuayu
+ */
 @Slf4j
 @RestController
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequestMapping("/v1/agents/info")
 public class BaseInfoController {
+    private final BaseInfoService baseInfoService;
 
-    @Autowired
-    private BaseInfoService baseInfoService;
 
     /**
      * 获取主机信息
-     * @param agentID
-     * @return
+     * @param userID 用户ID
+     * @param agentID 主机ID
+     * @return ResultCode.SUCCESS 获取成功 ResultCode.NO_AUTH_ERROR 无权限
      */
     @GetMapping
-    public Result<Object> getComputerInfo(@GetAttribute("userID") @NotNull String userID, @RequestParam String agentID) {
-        log.debug("agentID: {}", agentID);
-        if (agentID == null) {
-            return ResultUtils.error(ResultCode.PARAMS_ERROR);
-        }
+    public Result<Object> getComputerInfo(@GetAttribute("userID") @NotNull String userID, @RequestParam @NotNull String agentID) {
         Host host = baseInfoService.getComputerInfo(userID, agentID);
         if (host == null) {
             return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
@@ -45,15 +46,11 @@ public class BaseInfoController {
 
     /**
      * 注册主机
-     * @param host
-     * @return
+     * @param host 主机信息
+     * @return ResultCode.SUCCESS 注册成功 ResultCode.PARAMS_ERROR 参数错误 ResultCode.OPERATION_ERROR 操作失败
      */
     @PostMapping
     public Result<Object> postComputerInfo(@GetAttribute("teamID") @NotNull Integer teamID, @NotNull @RequestBody Host host) {
-        log.debug(host.toString());
-        if (teamID == null) {
-            return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
-        }
         host.setTeamId(teamID);
         long id = baseInfoService.postComputerInfo(host);
         if (id == 0) {
@@ -68,16 +65,12 @@ public class BaseInfoController {
 
     /**
      * 更新主机信息
-     * @param agentID
-     * @param hostname
-     * @return
+     * @param agentID 主机ID
+     * @param hostname 主机名
+     * @return ResultCode.SUCCESS 更新成功 ResultCode.NO_AUTH_ERROR 无权限 ResultCode.PARAMS_ERROR 参数错误
      */
     @PutMapping
-    public Result<Object> putComputerInfo(@GetAttribute("userID") @NotNull String userID, @RequestParam String agentID, @RequestParam String hostname) {
-        log.debug("agentID: {}, hostName: {}", agentID, hostname);
-        if (agentID == null || hostname == null) {
-            return ResultUtils.error(ResultCode.PARAMS_ERROR);
-        }
+    public Result<Object> putComputerInfo(@GetAttribute("userID") @NotNull String userID, @RequestParam @NotNull String agentID, @RequestParam @NotNull String hostname) {
         boolean b = baseInfoService.putComputerInfo(userID ,agentID, hostname);
         if (!b) {
             return ResultUtils.error(ResultCode.NO_AUTH_ERROR);

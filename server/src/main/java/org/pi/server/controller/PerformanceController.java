@@ -1,6 +1,7 @@
 package org.pi.server.controller;
 
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.ResultCode;
@@ -16,13 +17,25 @@ import java.util.Map;
 import org.pi.server.common.Result;
 
 
+/**
+ * @author hu1hu
+ */
 @Slf4j
 @RestController
 @RequestMapping("/v1/agents/usage")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class PerformanceController {
-    @Autowired
-    private InformationService informationService;
+    private final InformationService informationService;
 
+
+    /**
+     * 获取性能信息
+     * @param userID 用户ID
+     * @param agentID 主机ID
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return ResultCode.SUCCESS 获取成功 ResultCode.NO_AUTH_ERROR 无权限 ResultCode.PARAMS_ERROR 参数错误
+     */
     @GetMapping
     public Result<Object> getPerformance(@GetAttribute("userID") @NotNull String userID, @RequestParam String agentID, @RequestParam Long startTime, @DateTimeFormat Long endTime) {
         if (startTime >= endTime) {

@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * <p>
  *
@@ -24,4 +26,7 @@ public class Auth {
     private Long userId;
     private String openId;
     private String type;
+    private LocalDateTime bindTime;
+    private String name;
+    private String avatar;
 }
