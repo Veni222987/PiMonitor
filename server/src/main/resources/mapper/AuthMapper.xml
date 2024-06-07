@@ -8,5 +8,8 @@
         <result column="user_id" property="userId" />
         <result column="open_id" property="openId" />
         <result column="type" property="type" />
+        <result column="bind_time" property="bindTime" />
+        <result column="name" property="name" />
+        <result column="avatar" property="avatar" />
     </resultMap>
 </mapper>
