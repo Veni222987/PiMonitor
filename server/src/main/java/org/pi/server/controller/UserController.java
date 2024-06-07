@@ -7,13 +7,16 @@ import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.Result;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
+import org.pi.server.model.entity.Auth;
 import org.pi.server.model.entity.User;
+import org.pi.server.service.AuthService;
 import org.pi.server.service.UserService;
 import org.pi.server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +28,7 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserController {
     private final UserService userService;
+    private final AuthService authService;
 
     /**
      * 登录
@@ -35,6 +39,9 @@ public class UserController {
     @GetMapping("/login")
     public Result<Object> login(@RequestParam @NotNull String account, @RequestParam @NotNull String password) {
         long id = userService.login(account, password);
+        User user = userService.getByID(id);
+        List<Auth> auths = authService.getAuthsByUserID(id);
+
         // 账号不存在
         if (id == -1) {
             return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
@@ -48,6 +55,8 @@ public class UserController {
         String jwt = JwtUtils.tokenHead + JwtUtils.generateJwt(claims);
         Map<String, Object> map = new HashMap<>();
         map.put("jwt", jwt);
+        map.put("user", user);
+        map.put("auths", auths);
         return ResultUtils.success(map);
     }
 
@@ -81,5 +90,15 @@ public class UserController {
             return ResultUtils.error(ResultCode.SYSTEM_ERROR);
         }
         return ResultUtils.success();
+    }
+
+    @GetMapping("/info")
+    public Result<Object> info(@GetAttribute("userID") @NotNull String userID) {
+        User user = userService.getByID(Long.parseLong(userID));
+        List<Auth> auths = authService.getAuthsByUserID(Long.parseLong(userID));
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", user);
+        map.put("auths", auths);
+        return ResultUtils.success(map);
     }
 }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.pi.server.mapper.UserMapper;
 import org.pi.server.model.entity.User;
+import org.pi.server.service.AliyunOssService;
 import org.pi.server.service.UserService;
 import org.pi.server.utils.CodeUtils;
 import org.pi.server.utils.PasswordUtils;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     private final UserMapper userMapper;
+    private final AliyunOssService aliyunOssService;
 
     /**
      * 登录
@@ -147,5 +149,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             updateWrapper.set("avatar", user.getAvatar());
         }
         return update(updateWrapper);
+    }
+
+    /**
+     * 通过用户ID获取用户信息
+     * @param userID 用户ID
+     * @return 用户信息
+     */
+    @Override
+    public User getByID(long userID) {
+        User user = getById(userID);
+        if (user == null) {
+            return null;
+        } else {
+            String avatar = user.getAvatar();
+            if (avatar != null && !avatar.startsWith("http")) {
+                user.setAvatar(aliyunOssService.generateSignedURL(avatar));
+            }
+        }
+        return user;
     }
 }

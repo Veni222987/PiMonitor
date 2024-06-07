@@ -12,13 +12,17 @@ import org.pi.server.annotation.GetAttribute;
 import org.pi.server.common.Result;
 import org.pi.server.common.ResultCode;
 import org.pi.server.common.ResultUtils;
+import org.pi.server.model.entity.Auth;
+import org.pi.server.model.entity.User;
 import org.pi.server.service.AuthService;
+import org.pi.server.service.UserService;
 import org.pi.server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +36,7 @@ import java.util.Map;
 public class AuthController {
     private final AuthRequestFactory factory;
     private final AuthService authService;
+    private final UserService userService;
 
     /**
      * 获取支持第三方登录的类型 (本应用支持列表)
@@ -93,6 +98,8 @@ public class AuthController {
     @RequestMapping("/{type}/callback")
     public Result<Object> callback(@PathVariable @NotNull String type,AuthCallback callback) {
         long id = authService.login(type, callback);
+        User user = userService.getByID(id);
+        List<Auth> auths = authService.getAuthsByUserID(id);
         if (id == -1) {
             // 参数错误
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
@@ -105,6 +112,8 @@ public class AuthController {
         String jwt = JwtUtils.tokenHead + JwtUtils.generateJwt(claims);
         Map<String, Object> map = new HashMap<>();
         map.put("jwt", jwt);
+        map.put("user", user);
+        map.put("auths", auths);
         return ResultUtils.success(map);
     }
 }

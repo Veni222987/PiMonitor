@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * @author hu1hu
  */
@@ -46,45 +49,54 @@ public class AuthServiceImpl implements AuthService {
         String[] split = state.split(":");
 
         Auth auth = new Auth();
+        User user = new User();
         auth.setType(type);
-        long userID = -1;
+        long userID;
+        // Auth查询条件
+        QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();
+
+        if ("gitee".equals(type) || "github".equals(type)) {
+            if (!"2000".equals(jsonObject.getString("code"))) {
+                return -1;
+            }
+            String name = jsonObject.getJSONObject("data").getString("name");
+            String avatar = jsonObject.getJSONObject("data").getString("avatar");
+            // 用户信息
+            user.setUsername(name);
+            user.setAvatar(avatar);
+            user.setPassword("pim123456");
+            // Auth信息
+            auth.setOpenId(jsonObject.getJSONObject("data").getString("uuid"));
+            auth.setName(name);
+            auth.setAvatar(avatar);
+            auth.setBindTime(LocalDateTime.now());
+            // 查询条件
+            queryWrapper.eq("open_id", auth.getOpenId());
+        } else {
+            return -1;
+        }
+
         if (split.length == 1) {
             // 登录或注册
-            User user = new User();
-            if ("gitee".equals(type) || "github".equals(type)) {
-                log.info(jsonObject.toString());
-                if (!"2000".equals(jsonObject.getString("code"))) {
-                    return -1;
-                }
-                user.setUsername(jsonObject.getJSONObject("data").getString("username"));
-                user.setAvatar(jsonObject.getJSONObject("data").getString("avatar"));
-                user.setPassword("pim123456");
-                auth.setOpenId(jsonObject.getJSONObject("data").getString("uuid"));
-                QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();
-                queryWrapper.eq("open_id", auth.getOpenId());
-                if(authMapper.exists(queryWrapper)) {
-                    // 注册过了
-                    userID = authMapper.selectOne(queryWrapper).getUserId();
-                } else { // 未注册
-                    userID = userService.insertUser(user);
-                    auth.setUserId(userID);
-                    authMapper.insert(auth);
-                }
+            if(authMapper.exists(queryWrapper)) {
+                // 注册过了
+                userID = authMapper.selectOne(queryWrapper).getUserId();
+            } else { // 未注册
+                userID = userService.insertUser(user);
+                auth.setUserId(userID);
+                authMapper.insert(auth);
             }
         } else { // 绑定
             userID = Long.parseLong(split[0]);
-            QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("user_id", userID).eq("type", type);
-            if (authMapper.exists(queryWrapper)) {
+            QueryWrapper<Auth> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("user_id", userID).eq("type", type);
+            if (authMapper.exists(queryWrapper1)) {
                 // 已绑定
                 return -2;
             } else {
                 // 未绑定
-                if ("gitee".equals(type) || "github".equals(type)) {
-                    auth.setOpenId(jsonObject.getJSONObject("data").getString("uuid"));
-                    auth.setUserId(userID);
-                    authMapper.insert(auth);
-                }
+                auth.setUserId(userID);
+                authMapper.insert(auth);
             }
         }
         return userID;
@@ -103,4 +115,19 @@ public class AuthServiceImpl implements AuthService {
         int delete = authMapper.delete(queryWrapper);
         return delete > 0;
     }
+
+    /**
+     * 根据用户ID获取第三方登录信息
+     * @param userID 用户ID
+     * @return 第三方登录信息
+     */
+    @Override
+    public List<Auth> getAuthsByUserID(long userID) {
+        QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userID);
+        List<Auth> auths = authMapper.selectList(queryWrapper);
+        return auths;
+    }
+
+
 }
