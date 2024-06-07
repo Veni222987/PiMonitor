@@ -75,17 +75,11 @@ public class InformationServiceImpl implements InformationService {
      */
     @Override
     @Transactional
-    public void updateStatusByScanTime(String agentID) {
+    public void updateTime(String agentID) {
         LocalDateTime now = LocalDateTime.now();
         Host host = hostMapper.selectById(agentID);
-        // 如果2分钟内没有扫描，则更新状态
-        if (host.getLastTime().plusMinutes(2).isBefore(now)) {
-            host.setStatus(HostStatusEnum.UNKNOWN);
-            hostMapper.updateById(host);
-        } else if (host.getStatus() == HostStatusEnum.UNMONITORED) {
-            host.setStatus(HostStatusEnum.MONITORING);
-            hostMapper.updateById(host);
-        }
+        host.setLastTime(now);
+        hostMapper.updateById(host);
     }
 
     /**

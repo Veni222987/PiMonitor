@@ -64,7 +64,7 @@ public class MetricController {
         // 保存到kafka
         kafkaRepo.produce("metric", JSONObject.toJSONString(list));
         // 更新主机状态
-        informationService.updateStatusByScanTime(agentID);
+        informationService.updateTime(agentID);
         return ResultUtils.success();
     }
 }
