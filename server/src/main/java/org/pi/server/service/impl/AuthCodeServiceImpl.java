@@ -36,6 +36,8 @@ public class AuthCodeServiceImpl implements AuthCodeService {
     public String loginOrRegisterAuthCode(@NotNull Map<String, Object> map) {
         String account = (String) map.get("account");
         String code = redisService.get(account);
+        // 验证码只能使用一次
+        redisService.remove(account);
 
         if (code == null) {
             // 验证码不存在
@@ -85,6 +87,8 @@ public class AuthCodeServiceImpl implements AuthCodeService {
     public String resetPasswordAuthCode(Map<String, Object> map) {
         String account = (String) map.get("account");
         String code = redisService.get(account);
+        // 验证码只能使用一次
+        redisService.remove(account);
 
         if (code == null) {
             // 验证码不存在
@@ -115,6 +119,8 @@ public class AuthCodeServiceImpl implements AuthCodeService {
     public String bind(String userId, Map<String, Object> map) {
         String account = (String) map.get("account");
         String code = redisService.get(account);
+        // 验证码只能使用一次
+        redisService.remove(account);
 
         if (code == null) {
             // 验证码不存在

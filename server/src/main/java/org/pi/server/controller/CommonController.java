@@ -177,24 +177,58 @@ public class CommonController {
     }
 
     /**
-     * 验证验证码
-     * @param userID 用户ID
-     * @param requestMap type loginOrRegister/resetPassword/bind
+     * 验证码登录或注册
+     * @param requestMap 手机号码或邮箱, 验证码
      * @return ResultCode.SUCCESS 成功 ResultCode.PARAMS_ERROR 参数错误 ResultCode.NOT_FOUND_ERROR 未找到用户 ResultCode.VERIFY_CODE_ERROR 验证码错误 ResultCode.SYSTEM_ERROR 系统错误
      */
-    @PostMapping("authCode")
-    public Result<Object> authCode(@GetAttribute String userID, @NotNull @RequestBody Map<String,Object> requestMap) {
-        String jwt = null;
-        if ("loginOrRegister".equals(requestMap.get("type"))) {
-            // 登录或注册
-            jwt = authCodeService.loginOrRegisterAuthCode(requestMap);
-        } else if ("resetPassword".equals(requestMap.get("type"))) {
-            // 重置密码
-            jwt = authCodeService.resetPasswordAuthCode(requestMap);
-        } else if ("bind".equals(requestMap.get("type"))) {
-            // 绑定手机号或邮箱
-            jwt = authCodeService.bind(userID, requestMap);
+    @PostMapping("authCode/loginOrRegister")
+    public Result<Object> loginOrRegisterAuthCode(@NotNull @RequestBody Map<String,Object> requestMap) {
+        String jwt = authCodeService.loginOrRegisterAuthCode(requestMap);
+        if (jwt == null) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        } else if ("-1".equals(jwt)) {
+            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+        } else if ("-2".equals(jwt)) {
+            return ResultUtils.error(ResultCode.VERIFY_CODE_ERROR);
+        } else if ("-3".equals(jwt)) {
+            return ResultUtils.error(ResultCode.SYSTEM_ERROR);
         }
+        Map<String, Object> map = new HashMap<>();
+        map.put("jwt", JwtUtils.tokenHead + jwt);
+        return ResultUtils.success(map);
+    }
+
+    /**
+     * 重置密码
+     * @param requestMap 手机号码或邮箱, 验证码
+     * @return ResultCode.SUCCESS 成功 ResultCode.PARAMS_ERROR 参数错误 ResultCode.NOT_FOUND_ERROR 未找到用户 ResultCode.VERIFY_CODE_ERROR 验证码错误 ResultCode.SYSTEM_ERROR 系统错误
+     */
+    @PostMapping("authCode/resetPassword")
+    public Result<Object> resetPasswordAuthCode(@NotNull @RequestBody Map<String,Object> requestMap) {
+        String jwt = authCodeService.resetPasswordAuthCode(requestMap);
+        if (jwt == null) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        } else if ("-1".equals(jwt)) {
+            return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
+        } else if ("-2".equals(jwt)) {
+            return ResultUtils.error(ResultCode.VERIFY_CODE_ERROR);
+        } else if ("-3".equals(jwt)) {
+            return ResultUtils.error(ResultCode.SYSTEM_ERROR);
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("jwt", JwtUtils.tokenHead + jwt);
+        return ResultUtils.success(map);
+    }
+
+    /**
+     * 绑定手机号码或邮箱
+     * @param userID 用户ID
+     * @param requestMap 手机号码或邮箱, 验证码
+     * @return ResultCode.SUCCESS 成功 ResultCode.PARAMS_ERROR 参数错误 ResultCode.NOT_FOUND_ERROR 未找到用户 ResultCode.VERIFY_CODE_ERROR 验证码错误 ResultCode.SYSTEM_ERROR 系统错误
+     */
+    @PostMapping("authCode/bind")
+    public Result<Object> bind(@GetAttribute String userID, @NotNull @RequestBody Map<String,Object> requestMap) {
+        String jwt = authCodeService.bind(userID, requestMap);
         if (jwt == null) {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         } else if ("-1".equals(jwt)) {

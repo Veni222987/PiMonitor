@@ -31,7 +31,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                         // 发送验证码
                         "/v1/common/aliyun/code",
                         // 验证验证码
-                        "/v1/common/authCode",
+                        "/v1/common/authCode/loginOrRegister",
                         // 登录
                         "/v1/users/login",
                         // 获取第三方登录列表
@@ -41,7 +41,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
                         // 第三方登录回调
                         "/v1/oauth/{type}/callback"
                 );
-        registry.addInterceptor(authCodeInterceptor).addPathPatterns("/v1/common/authCode");
     }
 
     /**
