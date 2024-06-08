@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +59,7 @@ public class InformationServiceImpl implements InformationService {
      * @return 指标数据
      */
     @Override
-    public Map<String, List<Map<String, Object>>> getMetric(String userID, String agentID, Long startTime, Long endTime) {
+    public List<Map<String, Object>> getMetric(String userID, String agentID, Long startTime, Long endTime) {
         checkPermission(userID, agentID);
         FluxQueryBuilder builder = new FluxQueryBuilder();
         String build = builder.fromBucket("myBucket")
@@ -66,7 +67,17 @@ public class InformationServiceImpl implements InformationService {
                 .filterMeasurementByRegex("agent_" + agentID)
                 .build();
         List<FluxTable> tables = influxDBRepo.query(build);
-        return influxDBRepo.parse(tables);
+        List<Map<String, Object>> list = new LinkedList<>();
+        Map<String, List<Map<String, Object>>> parse = influxDBRepo.parse(tables);
+        parse.forEach((k, v) -> {
+            list.add(
+                    Map.of(
+                            "metric", k,
+                            "data", v
+                    )
+            );
+        });
+        return list;
     }
 
     /**
