@@ -8,6 +8,7 @@ import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -88,10 +89,11 @@ public class InfluxDBRepo {
      * @param tables 查询结果
      * @return 解析后的结果
      */
-    public Map<String, List<Map<String, Object>>> parse(List<FluxTable> tables) {
+    public Map<String, List<Map<String, Object>>> parse(@NotNull List<FluxTable> tables) {
         Map<String, List<Map<String, Object>>> result = new HashMap<>();
         tables.forEach(table -> {
             table.getRecords().forEach(record -> {
+                // 获取一条记录
                 String field = record.getField();
                 Instant time = record.getTime();
                 Object value = record.getValue();

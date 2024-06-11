@@ -45,7 +45,7 @@ public class MetricController {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         }
         try {
-            Map<String, List<Map<String, Object>>> metric = informationService.getMetric(userID, agentID, startTime, endTime);
+            List<Map<String, Object>> metric = informationService.getMetric(userID, agentID, startTime, endTime);
             return ResultUtils.success(metric);
         } catch (Exception e) {
             return ResultUtils.error(ResultCode.NO_AUTH_ERROR);

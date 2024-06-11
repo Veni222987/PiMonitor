@@ -54,10 +54,10 @@ public class AuthController {
      * @throws IOException IO异常
      */
     @GetMapping("/login/{type}")
-    public void login(@PathVariable String type, @NotNull HttpServletResponse response) throws IOException {
+    public Result<Object> login(@PathVariable String type, @NotNull HttpServletResponse response) throws IOException {
         AuthRequest authRequest = factory.get(type);
         // 随机生成state，用于校验回调state
-        response.sendRedirect(authRequest.authorize(AuthStateUtils.createState()));
+        return ResultUtils.success(Map.of("redirectURL", authRequest.authorize(AuthStateUtils.createState())));
     }
 
     /**
@@ -68,13 +68,13 @@ public class AuthController {
      * @throws IOException IO异常
      */
     @GetMapping("/bind/{type}")
-    public void bind(@GetAttribute("userID") @NotNull String userID, @PathVariable String type, @NotNull HttpServletResponse response) throws IOException {
+    public Result<Object> bind(@GetAttribute("userID") @NotNull String userID, @PathVariable String type, @NotNull HttpServletResponse response) throws IOException {
         AuthRequest authRequest = factory.get(type);
         // 随机生成state，用于校验回调state
         String state = AuthStateUtils.createState();
         // 拼接userID用于绑定
         state = userID + ":" + state;
-        response.sendRedirect(authRequest.authorize(state));
+        return ResultUtils.success(Map.of("redirectURL", authRequest.authorize(state)));
     }
 
     /**
