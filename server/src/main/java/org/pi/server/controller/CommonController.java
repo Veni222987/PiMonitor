@@ -1,6 +1,6 @@
 package org.pi.server.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -67,13 +67,14 @@ public class CommonController {
 
     /**
      * 发送邮件
-     * @param template 模板
-     * @param toAddress 收件人
-     * @param map 模板参数
+     * @param data 邮件模板, 收件人, 模板参数
      * @return ResultCode.SUCCESS 成功 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("/aliyun/email")
-    public Result email(@RequestParam @NotNull String template, @RequestParam @NotNull String toAddress, @RequestBody  @NotNull Map<String, String> map) {
+    public Result email(@RequestBody  @NotNull JSONObject data) {
+        String template = data.getString("template");
+        String toAddress = data.getString("toAddress");
+        Map<String, String> map = data.getJSONObject("map").toJavaObject(Map.class);
         try {
             boolean email = userService.exists("email", toAddress);
             if (!email) {
@@ -140,11 +141,12 @@ public class CommonController {
 
     /**
      * 聚合邮件短信发送验证码
-     * @param account 手机号码或邮箱
+     * @param data 邮箱或手机号码
      * @return ResultCode.SUCCESS 成功 ResultCode.REQUEST_TOO_FREQUENT 请求过于频繁 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("/aliyun/code")
-    public Result<Object> sendCode( @RequestParam @NotNull String account) {
+    public Result<Object> sendCode(@RequestBody @NotNull JSONObject data) {
+        String account = data.getString("account");
         // 限制发送频率
         String s = redisService.get(account);
         if (s != null) {

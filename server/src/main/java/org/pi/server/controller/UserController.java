@@ -1,5 +1,6 @@
 package org.pi.server.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -64,11 +65,12 @@ public class UserController {
      * 重置密码
      * @param phoneNumber 手机号
      * @param email 邮箱
-     * @param password 新密码
+     * @param data 新密码
      * @return ResultCode.SUCCESS 重置成功 ResultCode.NOT_FOUND_ERROR 账号不存在
      */
     @PostMapping("/resetPassword")
-    public Result<Object> resetPassword(@GetAttribute("phoneNumber") String phoneNumber, @GetAttribute("email") String email, @RequestParam @NotNull String password) {
+    public Result<Object> resetPassword(@GetAttribute("phoneNumber") String phoneNumber, @GetAttribute("email") String email, @RequestBody @NotNull JSONObject data) {
+        String password = data.getString("password");
         boolean result;
         if (phoneNumber != null) {
             result = userService.setPasswordByPhoneNumber(phoneNumber, password);

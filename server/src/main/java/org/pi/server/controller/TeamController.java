@@ -1,5 +1,6 @@
 package org.pi.server.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -28,11 +29,12 @@ public class TeamController {
     /**
      * 创建团队
      * @param userID 用户ID
-     * @param teamName 团队名称
+     * @param data 团队名称
      * @return ResultCode.SUCCESS 创建成功 ResultCode.OPERATION_ERROR 操作失败
      */
     @PostMapping("")
-    public Result<Object> create(@GetAttribute("userID") @NotNull String userID, @RequestParam @NotNull String teamName) {
+    public Result<Object> create(@GetAttribute("userID") @NotNull String userID, @RequestBody @NotNull JSONObject data) {
+        String teamName = data.getString("teamName");
         String jwt = teamService.create(Long.parseLong(userID), teamName);
         if (jwt == null) {
             return new Result<>(ResultCode.OPERATION_ERROR);
