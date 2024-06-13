@@ -14,8 +14,8 @@ public enum AlarmTypeEnum {
     MEMORY("mem"),
     DISK("disk"),
     NETWORK("network"),
-    PROCESS("tcp"),
-    CUSTOM("host");
+    TCP("tcp"),
+    HOST("host");
     private final String type;
 
     AlarmTypeEnum(String type) {
