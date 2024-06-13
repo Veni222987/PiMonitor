@@ -11,6 +11,7 @@ import org.pi.server.common.ResultUtils;
 import org.pi.server.model.entity.Auth;
 import org.pi.server.model.entity.User;
 import org.pi.server.service.AuthService;
+import org.pi.server.service.TeamService;
 import org.pi.server.service.UserService;
 import org.pi.server.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final AuthService authService;
+    private final TeamService teamService;
 
     /**
      * 登录
@@ -86,6 +88,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 修改用户信息
+     * @param userID 用户ID
+     * @param user 用户信息
+     * @return ResultCode.SUCCESS 修改成功 ResultCode.SYSTEM_ERROR 系统错误
+     */
     @PostMapping("/modify")
     public Result<Object> modify(@GetAttribute("userID") @NotNull String userID, @RequestBody @NotNull User user) {
         if (!userService.modify(Long.parseLong(userID), user)) {
@@ -94,6 +102,11 @@ public class UserController {
         return ResultUtils.success();
     }
 
+    /**
+     * 获取用户信息
+     * @param userID 用户ID
+     * @return ResultCode.SUCCESS 获取成功
+     */
     @GetMapping("/info")
     public Result<Object> info(@GetAttribute("userID") @NotNull String userID) {
         User user = userService.getByID(Long.parseLong(userID));
@@ -103,4 +116,29 @@ public class UserController {
         map.put("auths", auths);
         return ResultUtils.success(map);
     }
+
+    /**
+     * 邮箱、手机号解除绑定
+     * @param userID 用户ID
+     * @param map 解绑类型
+     */
+    @PostMapping("/unbind")
+    public Result<Object> unbind(@GetAttribute("userID") @NotNull String userID, @NotNull @RequestBody Map<String, String> map) {
+        if (!userService.unbind(Long.parseLong(userID), map.getOrDefault("type", ""))) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success();
+    }
+
+    /**
+     * 查看所属团队列表
+     * @param userID 用户ID
+     */
+    @GetMapping("/teamList")
+    public Result<Object> teamList(@GetAttribute("userID") @NotNull String userID,
+                                   @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                   @RequestParam(value = "size", defaultValue = "10") Integer size){
+        return ResultUtils.success(teamService.list(userID, page, size));
+    }
+
 }

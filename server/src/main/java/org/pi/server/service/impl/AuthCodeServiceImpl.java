@@ -116,7 +116,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
      * @return String jwt：成功  “-1”： 验证码不存在  “-2”： 验证码错误  “-3”：系统错误
      */
     @Override
-    public String bind(String userId, Map<String, Object> map) {
+    public String bind(String userId, @NotNull Map<String, Object> map) {
         String account = (String) map.get("account");
         String code = redisService.get(account);
         // 验证码只能使用一次

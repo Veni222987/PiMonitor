@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.pi.server.mapper.AlarmMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.pi.server.model.entity.Alarm">
+        <id column="id" property="id" />
+        <result column="host_id" property="hostId" />
+        <result column="alarm_type" property="alarmType" />
+        <result column="threshold_value" property="thresholdValue" />
+        <result column="severity" property="severity" />
+        <result column="duration" property="duration" />
+        <result column="notificaiton_account" property="notificationAccount" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+</mapper>

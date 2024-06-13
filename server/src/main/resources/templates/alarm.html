@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>验证码通知 - PIMonitor</title>
+    <title>报警通知 - PIMonitor</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
@@ -27,42 +27,47 @@
         }
         .inner-container {
             background-color: #ffffff;
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 400px;
+            max-width: 600px;
             width: 100%;
+            border-top: 8px solid #4a90e2;
         }
         .logo {
             font-size: 32px;
             font-weight: 700;
             color: #4a90e2;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
         .logo span {
             color: #333333;
         }
-        .sub-header {
-            font-size: 20px;
-            color: #333333;
-            margin-top: 10px;
-        }
-        .code {
-            font-size: 48px;
+        .header {
+            font-size: 24px;
             font-weight: bold;
             color: #333333;
-            margin: 30px 0;
-            letter-spacing: 8px;
-            background-color: #f4f7f9;
-            padding: 10px 20px;
-            border-radius: 8px;
-            display: inline-block;
+            margin: 20px 0;
         }
         .message {
             font-size: 16px;
             color: #555555;
             margin: 20px 0;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .message p {
+            margin: 10px 0;
+        }
+        .details {
+            background-color: #f4f7f9;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .details li {
+            margin: 10px 0;
         }
         .footer {
             font-size: 14px;
@@ -90,11 +95,6 @@
             .inner-container {
                 padding: 20px 15px;
             }
-            .code {
-                font-size: 24px;
-                padding: 8px 15px;
-                letter-spacing: 4px;
-            }
             .btn {
                 padding: 10px 20px;
                 font-size: 14px;
@@ -107,11 +107,21 @@
 <div class="outer-container">
     <div class="inner-container">
         <div class="logo">PI<span>Monitor</span></div>
-        <div class="sub-header">您的验证码</div>
-        <div class="code">${code}</div>
-        <div class="message">请在2分钟内使用此验证码进行验证。</div>
-        <a href="#" class="btn">立即验证</a>
-        <div class="footer">如果您未请求此验证码，请忽略此邮件。</div>
+        <div class="header">报警通知</div>
+        <div class="message">
+            <p>尊敬的用户，</p>
+            <p>您的系统检测到以下异常：</p>
+            <div class="details">
+                <ul>
+                    <li><strong>报警类型：</strong> ${alarmType}</li>
+                    <li><strong>发生时间：</strong> ${alarmTime}</li>
+                    <li><strong>详细信息：</strong> ${alarmDetails}</li>
+                </ul>
+            </div>
+            <p>请尽快处理此问题以确保系统的正常运行。</p>
+        </div>
+        <a href="${actionUrl}" class="btn">查看详情</a>
+        <div class="footer">如果您未请求此报警通知，请忽略此邮件。</div>
     </div>
 </div>
 </body>

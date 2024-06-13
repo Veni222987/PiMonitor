@@ -2,6 +2,8 @@ package org.pi.server.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.pi.server.mapper.HostMapper;
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BaseInfoServiceImpl extends ServiceImpl<HostMapper, Host> implements BaseInfoService {
     private final TeamUserMapper teamUserMapper;
+    private final HostMapper hostMapper;
 
     /**
      * 注册主机信息
@@ -94,5 +97,19 @@ public class BaseInfoServiceImpl extends ServiceImpl<HostMapper, Host> implement
         } else {
             return null;
         }
+    }
+
+    @Override
+    public IPage<Host> getList(String userID, String teamID, int page, int size) {
+        QueryWrapper<TeamUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("team_id", teamID).eq("user_id", userID);
+        boolean exists = teamUserMapper.exists(queryWrapper);
+        if (!exists) {
+            return null;
+        }
+        QueryWrapper<Host> hostQueryWrapper = new QueryWrapper<>();
+        hostQueryWrapper.eq("team_id", teamID);
+        IPage<Host> resultPage = hostMapper.selectPage(new Page<>(page, size), hostQueryWrapper);
+        return resultPage;
     }
 }

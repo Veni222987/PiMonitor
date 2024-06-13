@@ -148,7 +148,7 @@ aliyun:
     endpoint: dm.aliyuncs.com
     accountName: javaweb@hu1hu.top
     fromAlias: PIM
-    subject: 警告
+    subject: 通知
   sms:
     endpoint: dysmsapi.aliyuncs.com
     sign-name: 阿里云短信测试

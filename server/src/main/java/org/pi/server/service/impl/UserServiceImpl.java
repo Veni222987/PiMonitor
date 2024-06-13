@@ -37,9 +37,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user;
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (account.contains("@")) {
+            // 邮箱登录
             queryWrapper.eq("email", account);
+        } else if (account.startsWith("pim")) {
+            // 账号登录 pim + id
+            queryWrapper.eq("id", Long.parseLong(account.substring(3)));
         } else {
-            // account 是手机号
+            // 手机号登录
             queryWrapper.eq("phone_number", account);
         }
         queryWrapper.last("LIMIT 1");
@@ -168,5 +172,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
         return user;
+    }
+
+    /**
+     * 邮箱、手机号解绑
+     * @param userID 用户ID
+     * @return 用户信息
+     */
+    @Override
+    public boolean unbind(long userID, @NotNull String type) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", userID);
+        if (type.equals("email")) {
+            updateWrapper.set("email", null);
+        } else if (type.equals("phone_number")) {
+            updateWrapper.set("phone_number", null);
+        }
+        return update(updateWrapper);
     }
 }
