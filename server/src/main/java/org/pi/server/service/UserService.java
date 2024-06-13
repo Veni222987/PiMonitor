@@ -17,6 +17,6 @@ public interface UserService extends IService<User> {
     boolean setPasswordByPhoneNumber(String phoneNumber, String password);
     boolean setPasswordByEmail(String email, String password);
     boolean modify(long userID, User user);
-
     User getByID(long userID);
+    boolean unbind(long userID, String type);
 }
