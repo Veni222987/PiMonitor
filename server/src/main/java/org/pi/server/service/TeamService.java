@@ -1,13 +1,17 @@
 package org.pi.server.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.pi.server.model.entity.Team;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TeamService {
     String create(Long userID, String teamName);
     boolean modify(String userID, String teamID, String teamName);
-    List<Team> list(String userID);
+    IPage<Team> list(String userID, int page, int size);
+
+    IPage<Map<String, Object>> members(String userID, String teamID, int page, int size);
     Team info(String userID, String teamID);
 
     boolean delete(String userID, String teamID);

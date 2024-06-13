@@ -1,6 +1,7 @@
 package org.pi.server.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -56,15 +57,22 @@ public class TeamController {
     }
 
     /**
-     * 获取团队列表
+     * 获取团队成员列表
      * @param userID 用户ID
-     * @return ResultCode.SUCCESS 获取成功
+     * @param teamID 团队ID
+     * @return ResultCode.SUCCESS 获取成功 ResultCode.NO_AUTH_ERROR 无权限 ResultCode.NOT_FOUND_ERROR 未找到
      */
-    @GetMapping("/list")
-    public Result<Object> list(@GetAttribute("userID") @NotNull String userID) {
-        List<Team> list = teamService.list(userID);
-        return ResultUtils.success(list);
+    @GetMapping("/members")
+    public Result<Object> members(@GetAttribute("userID") @NotNull String userID, @RequestParam @NotNull String teamID,
+                                  @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                  @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        IPage<Map<String, Object>> members = teamService.members(userID, teamID, page, size);
+        if (members == null) {
+            return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
+        }
+        return members == null ? ResultUtils.error(ResultCode.NO_AUTH_ERROR) : ResultUtils.success(members);
     }
+
 
     /**
      * 获取团队信息
