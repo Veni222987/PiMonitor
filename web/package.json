@@ -11,9 +11,12 @@
   "dependencies": {
     "antd": "^5.17.3",
     "axios": "^1.7.2",
+    "jsonwebtoken": "^9.0.2",
     "next": "14.2.3",
+    "rc-slider-captcha": "^1.4.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "ut2": "^1.9.1"
   },
   "devDependencies": {
     "@types/node": "^20",
