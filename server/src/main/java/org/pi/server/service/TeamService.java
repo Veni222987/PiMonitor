@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface TeamService {
-    String create(Long userID, String teamName);
+    Team create(Long userID, String teamName);
     boolean modify(String userID, String teamID, String teamName);
     IPage<Team> list(String userID, int page, int size);
 
