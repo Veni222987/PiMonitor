@@ -1,12 +1,22 @@
 "use client";
 import React from "react";
 import {Button} from "antd";
+import HeaderNav from "@/components/HeaderNav";
+import {CreateUser} from "@/types/response.type";
+import LoginBox from "@/app/login/components/LoginBox";
 
 export default function Login() {
-
+    let user_info: CreateUser = {
+        id: '1',
+        email: '1826942933@qq.com',
+        phone: '1826942933',
+        avatar_url: 'https://avatars.githubusercontent.com/u/19998011?s=70&v=4',
+        username: 'PiMonitor',
+    };
     return (
         <main
             className="flex flex-col justify-between items-center h-full w-full p-[2px]">
+            <HeaderNav user_info={user_info}></HeaderNav>
             <section className="flex flex-col justify-center items-center w-full h-full">
                 <div
                     className="fixed w-full h-full bg-bg-radial overflow-hidden">
@@ -27,25 +37,7 @@ export default function Login() {
                         <button className="text-[12px] leading-4 w-32 aspect-[8] bg-blue-600 p-2 rounded-2xl">开始探索</button>
                     </div>
                 </div>
-                <div
-                    className="fixed right-24 flex flex-col items-start gap-2 w-80 h-80 mt-10 rounded-xl drop-shadow-xl">
-                    <h1 className="text-3xl text-white mb-4">登录畅享更多权益</h1>
-                    <input className="w-full aspect-[8] rounded-lg text-[12px] p-2 bg-[#333645]/50"
-                           placeholder={"请输入邮箱/手机号（国际号码加区号）"}/>
-                    <input className="w-full aspect-[8] rounded-lg text-[12px] p-2 bg-[#333645]/50"
-                           placeholder={"请输入验证码"}/>
-                    <Button className="w-full my-3" type="primary">登录 / 注册</Button>
-                    <span className="text-white text-[10px] w-full text-center">其他方式</span>
-                    <div className="w-full h-0 border-[1px] border-white/10 border-dashed bg-white/30"></div>
-                    <div className="w-full flex gap-2 justify-center">
-                        <a className="hover:scale-110" href='https://github.com/ApiKnight' target='_blank'>
-                            <img src="/gitub.svg"/>
-                        </a>
-                        <a className="hover:scale-110" href='https://github.com/ApiKnight' target='_blank'>
-                            <img src="/gitee.svg"/>
-                        </a>
-                    </div>
-                </div>
+                <LoginBox/>
                 <div className="fixed bottom-6 flex-1 flex items-center text-white/80">Copyright © Team200PI</div>
             </section>
         </main>
