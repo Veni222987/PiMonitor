@@ -1,12 +1,17 @@
 "use client";
 import React from "react";
-import {Button} from "antd";
 import HeaderNav from "@/components/HeaderNav";
-import {CreateUser} from "@/types/response.type";
 import LoginBox from "@/app/login/components/LoginBox";
 
 export default function Login() {
-    let user_info: CreateUser = {
+    // let user_info: CreateUser = {
+    //     id: '1',
+    //     email: '1826942933@qq.com',
+    //     phone: '1826942933',
+    //     avatar_url: 'https://avatars.githubusercontent.com/u/19998011?s=70&v=4',
+    //     username: 'PiMonitor',
+    // };
+    let user_info = {
         id: '1',
         email: '1826942933@qq.com',
         phone: '1826942933',
