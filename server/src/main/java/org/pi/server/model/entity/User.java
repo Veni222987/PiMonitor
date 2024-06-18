@@ -3,12 +3,9 @@ package org.pi.server.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.pi.server.model.enums.UserStatusEnum;
 
 /**
 * <p>
@@ -34,7 +31,7 @@ public class User {
     /**
     * 头像，存储url 使用oss存储
     */
-    private String avater;
+    private String avatar;
 
     /**
     * 电话号码
@@ -50,25 +47,5 @@ public class User {
     * 密码
     */
     private String password;
-
-    /**
-    * 角色id
-    */
-    private String roleId;
-
-    /**
-    * 状态
-    */
-    private UserStatusEnum status;
-
-    /**
-    * 最后登录时间
-    */
-    private LocalDateTime lastLoginTime;
-
-    /**
-    * 记录用户登录尝试次数，用于安全监控
-    */
-    private Byte loginAttempts;
 
 }

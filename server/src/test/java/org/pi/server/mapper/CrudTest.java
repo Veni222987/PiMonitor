@@ -2,7 +2,6 @@ package org.pi.server.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.pi.server.model.entity.Role;
-import org.pi.server.model.enums.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

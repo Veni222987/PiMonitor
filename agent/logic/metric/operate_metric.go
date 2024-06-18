@@ -1,7 +1,6 @@
 package metric
 
 import (
-	"Agent/entity"
 	"Agent/repo"
 	"context"
 	"log"
@@ -34,10 +33,9 @@ func MonitorMetric(ctx context.Context) error {
 					continue
 				}
 
-				data := &entity.Metrics{
-					Timestamp:   time.Now().Unix(),
-					MetricsList: repo.Scan(portArr),
-				}
+				data := repo.Scan(portArr)
+				// 发送metrics数据
+				repo.UploadMetrics(data)
 				log.Printf("Metrics data: %+v", data)
 			}
 		}

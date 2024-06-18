@@ -11,14 +11,15 @@ import java.util.Collections;
 
 /**
  * mybatis-plus代码生成器
- * https://baomidou.com/reference/new-code-generator-configuration/
+ * @see <a href="https://baomidou.com/guide/generator.html">generator</a>
+ * @author hu1hu
  */
 
 public class CodeGenerator {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         FastAutoGenerator.create("jdbc:mysql://120.77.76.40:3306/pim", "root", "ZAQ1@wsx")
-                .globalConfig(builder -> builder   // 全局配置
+                .globalConfig(builder -> builder // 全局配置
                         .disableOpenDir() // 禁止打开输出目录
                         .author("hu1hu") // 设置作者
                         .outputDir(Paths.get(System.getProperty("user.dir")) + "/src/main/java") // 指定输出目录

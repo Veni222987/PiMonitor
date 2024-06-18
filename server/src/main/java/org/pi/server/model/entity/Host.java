@@ -48,12 +48,12 @@ public class Host {
     /**
     * 内存大小
     */
-    private Integer memory;
+    private Long memory;
 
     /**
     * 磁盘大小
     */
-    private Integer disk;
+    private Long disk;
 
     /**
     * 网卡信息
@@ -80,5 +80,10 @@ public class Host {
     * 主机别名，默认为id
     */
     private String hostname;
+
+    /**
+     * 团队id
+     */
+    private Integer teamId;
 
 }

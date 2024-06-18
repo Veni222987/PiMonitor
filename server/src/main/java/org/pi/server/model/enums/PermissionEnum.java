@@ -1,5 +1,12 @@
 package org.pi.server.model.enums;
 
+import lombok.Getter;
+
+/**
+ * @author hu1hu
+ */
+
+@Getter
 public enum PermissionEnum {
     ACTION_ALL("action_all"),
     RANGE_ALL_USER("range_all_user"),
@@ -18,13 +25,10 @@ public enum PermissionEnum {
     REMOVE_HOST_FROM_USER("remove_host_from_user"),
     VIEW_USER_ACCESS_HOST("view_user_access_host"),
     NONE("none");
-    private String permissionName;
+    private final String permissionName;
 
     PermissionEnum(String permissionName) {
         this.permissionName = permissionName;
     }
 
-    public String getPermissionName() {
-        return permissionName;
-    }
 }
