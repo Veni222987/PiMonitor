@@ -1,12 +1,9 @@
-import { UserOutlined, GithubOutlined } from '@ant-design/icons'
+import { GithubOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Avatar } from 'antd'
-import Link from 'next/link'
 import type { ChildrenProps } from '@/types/headerNav.d.ts'
-import { CreateUser } from '@/types/response.type.js'
 
 const HeaderNav: React.FC<ChildrenProps> = (props) => {
-    const { ifHideUser = false, user_info = {} as CreateUser } = props
 
     return (
         // left
