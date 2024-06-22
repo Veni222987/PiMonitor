@@ -36,11 +36,11 @@ public class TeamController {
     @PostMapping("")
     public Result<Object> create(@GetAttribute("userID") @NotNull String userID, @RequestBody @NotNull JSONObject data) {
         String teamName = data.getString("teamName");
-        String jwt = teamService.create(Long.parseLong(userID), teamName);
-        if (jwt == null) {
+        Team team = teamService.create(Long.parseLong(userID), teamName);
+        if (team == null) {
             return new Result<>(ResultCode.OPERATION_ERROR);
         }
-        return ResultUtils.success(Map.of("token", jwt));
+        return ResultUtils.success(team);
     }
 
     /**

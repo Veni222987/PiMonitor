@@ -50,11 +50,11 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
      * 创建团队
      * @param userID 用户ID
      * @param teamName 团队名
-     * @return token
+     * @return team
      */
     @Transactional
     @Override
-    public String create(Long userID, String teamName) {
+    public Team create(Long userID, String teamName) {
         Team team = new Team();
         team.setName(teamName);
         team.setOwner(userID);
@@ -71,7 +71,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
                 teamUser.setTeamId(team.getId());
                 teamUser.setUserId(userID);
                 teamUserMapper.insert(teamUser);
-                return jwt;
+                return team;
             }
         }
         return null;
