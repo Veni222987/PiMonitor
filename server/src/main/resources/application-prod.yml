@@ -17,10 +17,14 @@ justauth:
   enabled: true
   type:
     GITEE:
-      client-id: aea875917e89b990933fcdb538cd5853558b659d498f7b12fb22930caf257503
-      client-secret: 38b42e453a557a9ca080935d684957fdf7aaadfd3f71e8b57441386d22654e91
-      redirect-uri: http://120.77.76.40:8000/api/v1/oauth/gitee/callback
+      client-id: 797c9a935e1a4835ab993e4c4e4d50d95134353728aa958353947e9609069b82
+      client-secret: 568d59b8d1dadf8aece963c8e29e1675056bd26dc0278d2c932d3e6f3e56fb19
+      redirect-uri: https://api.pimonitor.top/gitee/callback
     GITHUB:
-      client-id: Ov23liEzH0f0ni9lgNvO
-      client-secret: a88a8c0f8c49215880ddd1e8b47f4611ed0e90a6
-      redirect-uri: http://120.77.76.40:8000/api/v1/oauth/github/callback
+      client-id: Ov23li73rcZBXhnCoRoI
+      client-secret: e3753067c245b0dcfd28a242078b9407d87552af
+      redirect-uri: https://api.pimonitor.top/github/callback
+    WECHAT_OPEN:
+      client-id: wxcda274a39902039c
+      client-secret: 0867d7b9a2b9e2b1d953adae1322f7e5
+      redirect-uri: https://api.pimonitor.top/wechat_open/callback

@@ -55,11 +55,11 @@ public class AuthServiceImpl implements AuthService {
         // Auth查询条件
         QueryWrapper<Auth> queryWrapper = new QueryWrapper<>();
 
-        if ("gitee".equals(type) || "github".equals(type)) {
+        if ("gitee".equals(type) || "github".equals(type) || "wechat_open".equals(type)) {
             if (!"2000".equals(jsonObject.getString("code"))) {
                 return -1;
             }
-            String name = jsonObject.getJSONObject("data").getString("name");
+            String name = jsonObject.getJSONObject("data").getString("nickname");
             String avatar = jsonObject.getJSONObject("data").getString("avatar");
             // 用户信息
             user.setUsername(name);
