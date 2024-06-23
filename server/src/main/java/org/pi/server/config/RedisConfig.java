@@ -2,6 +2,8 @@ package org.pi.server.config;
 
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -17,14 +19,25 @@ import java.time.Duration;
  * @date 2024/6/14 1:15
  * @description Redis 配置
  */
+@Data
 @Configuration
+@ConfigurationProperties(prefix = "spring.data.redis")
 public class RedisConfig {
+    private String host;
+    private int port;
+    private int timeout;
+    private String password;
+    private int database;
+
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         // 配置 Redis 连接信息
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration("localhost", 6379);
-
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
+        {
+            redisStandaloneConfiguration.setPassword(password);
+            redisStandaloneConfiguration.setDatabase(database);
+        }
         // 配置 Lettuce 客户端选项，包括保活设置
         SocketOptions socketOptions = SocketOptions.builder()
                 .keepAlive(true)
