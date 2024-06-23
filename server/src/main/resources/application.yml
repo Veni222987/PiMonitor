@@ -47,7 +47,6 @@ spring:
       host: 120.77.76.40
       password: ZAQ1@wsx
       port: 6379
-      timeout: 3000ms # 连接超时时间
       # Lettuce连接池配置
       lettuce:
         pool:

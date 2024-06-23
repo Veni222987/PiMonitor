@@ -90,7 +90,8 @@ public class AliEmailUtils {
         // 替换模板中的占位符
         map.forEach(
                 (key, value) -> {
-                    content.replace(content.indexOf(key),content.indexOf(key)+key.length(),value);
+                    key = "${" + key + "}";
+                    content.replace(content.indexOf(key),content.indexOf(key) + key.length(), value);
                 }
         );
         return content.toString();
