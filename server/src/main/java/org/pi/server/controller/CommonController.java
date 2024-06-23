@@ -158,7 +158,7 @@ public class CommonController {
             try {
                 // 发送邮件
                 String template = "code";
-                Map<String, String> map = Map.of("${code}", code);
+                Map<String, String> map = Map.of("code", code);
                 aliyunEmailService.send(template, account, map);
             } catch (Exception e) {
                 log.error("发送邮件失败", e);
