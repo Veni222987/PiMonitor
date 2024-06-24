@@ -39,7 +39,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
 
     private final TeamUserMapper teamUserMapper;
     private final RedisService redisService;
-    private final QRCodeUtils qrCodeUtils;
     private final HostMapper hostMapper;
     private final UserMapper userMapper;
     private final AliyunOssService aliyunOssService;

@@ -2,8 +2,7 @@ package org.pi.server.config;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.pi.server.annotation.GetAttributeResolver;
-import org.pi.server.aop.AuthCodeInterceptor;
+import org.pi.server.aop.GetAttributeResolver;
 import org.pi.server.aop.CommonInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class InterceptorConfig implements WebMvcConfigurer {
     private final CommonInterceptor commonInterceptor;
-    private final AuthCodeInterceptor authCodeInterceptor;
 
     @Override
     public void addInterceptors(@NotNull InterceptorRegistry registry) {

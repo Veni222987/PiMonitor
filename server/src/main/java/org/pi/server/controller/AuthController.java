@@ -4,6 +4,7 @@ import com.xkcoding.justauth.AuthRequestFactory;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.zhyd.oauth.exception.AuthException;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
@@ -51,10 +52,18 @@ public class AuthController {
      * 第三方登录
      * @param type 第三方账号类型
      * @param response HttpServletResponse
-     * @throws IOException IO异常
+     * @return ResultCode.SUCCESS 成功 ResultCode.PARAMS_ERROR 参数错误 ResultCode.SYSTEM_ERROR 系统内部异常
      */
     @GetMapping("/login/{type}")
-    public Result<Object> login(@PathVariable String type, @NotNull HttpServletResponse response) throws IOException {
+    public Result<Object> login(@PathVariable String type, HttpServletResponse response) {
+        // 参数检查
+        if (type == null || type.isEmpty()) {
+            return ResultUtils.error(ResultCode.PARAMS_ERROR);
+        }
+        if (!factory.oauthList().contains(type.toUpperCase())) {
+            return ResultUtils.error(ResultCode.TYPE_NOT_SUPPORT);
+        }
+        // 获取第三方登录请求
         AuthRequest authRequest = factory.get(type);
         // 随机生成state，用于校验回调state
         return ResultUtils.success(Map.of("redirectURL", authRequest.authorize(AuthStateUtils.createState())));
@@ -68,7 +77,12 @@ public class AuthController {
      * @throws IOException IO异常
      */
     @GetMapping("/bind/{type}")
-    public Result<Object> bind(@GetAttribute("userID") @NotNull String userID, @PathVariable String type, @NotNull HttpServletResponse response) throws IOException {
+    public Result<Object> bind(@GetAttribute("userID") @NotNull String userID, @PathVariable @NotNull String type, @NotNull HttpServletResponse response) throws IOException {
+        // 参数检查
+        if (!factory.oauthList().contains(type.toUpperCase())) {
+            return ResultUtils.error(ResultCode.TYPE_NOT_SUPPORT);
+        }
+        // 获取第三方登录请求
         AuthRequest authRequest = factory.get(type);
         // 随机生成state，用于校验回调state
         String state = AuthStateUtils.createState();
@@ -84,7 +98,11 @@ public class AuthController {
      * @return ResultCode.SUCCESS 成功 ResultCode.PARAMS_ERROR 参数错误
      */
     @DeleteMapping("/unbind/{type}")
-    public Result<Object> unbind(@GetAttribute("userID") @NotNull String userID, @PathVariable @NotNull String type) {
+    public Result<Object> unbind(@GetAttribute @NotNull String userID, @PathVariable @NotNull String type) {
+        // 参数检查
+        if (!factory.oauthList().contains(type.toUpperCase())) {
+            return ResultUtils.error(ResultCode.TYPE_NOT_SUPPORT);
+        }
         boolean unbind = authService.unbind(userID, type);
         return unbind ? ResultUtils.success() : ResultUtils.error(ResultCode.PARAMS_ERROR);
     }
