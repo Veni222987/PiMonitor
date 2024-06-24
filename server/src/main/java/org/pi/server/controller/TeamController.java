@@ -101,20 +101,19 @@ public class TeamController {
     /**
      * 邀请成员
      * @param userID 用户ID
-     * @param type 邀请类型 Code/QRCode/Link
      * @param teamID 团队ID
      * @return ResultCode.SUCCESS 邀请成功 ResultCode.NO_AUTH_ERROR 无权限 ResultCode.NOT_FOUND_ERROR 未找到
      * @throws Exception 异常
      */
-    @GetMapping("/invite/{type}")
-    public Result<Object> invite(@GetAttribute("userID") @NotNull String userID, @PathVariable @NotNull String type, @RequestParam @NotNull String teamID) throws Exception {
-        String invite = teamService.invite(userID, type, teamID);
+    @GetMapping("/invite")
+    public Result<Object> invite(@GetAttribute("userID") @NotNull String userID, @RequestParam @NotNull String teamID) throws Exception {
+        String invite = teamService.invite(userID, teamID);
         if ("no_auth".equals(invite)) {
             return ResultUtils.error(ResultCode.NO_AUTH_ERROR);
         } else if ("no_team".equals(invite)) {
             return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
         }
-        return "no_type".equals(invite) ? ResultUtils.error(ResultCode.PARAMS_ERROR) : ResultUtils.success(Map.of(type, invite));
+        return "no_type".equals(invite) ? ResultUtils.error(ResultCode.PARAMS_ERROR) : ResultUtils.success(Map.of("Code", invite));
     }
 
     /**
