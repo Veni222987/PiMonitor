@@ -2,7 +2,7 @@ import axios, {AxiosError, AxiosRequestConfig, Method} from "axios"
 import {StringUtils} from "./StringUtils"
 
 const Host = "/api"
-// const Host = "http://127.0.0.1:4523/m1/4268774-0-default"
+// const Host = "http://120.77.76.40:8000/api"
 
 const DefaultTimeout = 120000;
 
@@ -131,7 +131,7 @@ export async function request<T = any>(
 
     // @ts-ignore
     if (status >= 200 && status < 300 &&
-        code === 0 || code === 200) return res;
+        code === 0 || code === 200 || code === 20000) return res;
 
     // @ts-ignore
     const message = response.data?.msg || response.data?.message || response.data?.reason || response.statusText;
