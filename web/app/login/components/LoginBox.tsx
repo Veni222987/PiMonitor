@@ -149,7 +149,7 @@ export default function LoginBox() {
                     "_blank",
                     "toolbar=no,width=800, height=600"
                 );
-                window.addEventListener("storage",() => handleThirdPartyCallback())
+                window.addEventListener("storage",() => handleThirdPartyCallback(type))
             } catch (e) {
                 console.error("LoginBox failed:", e)
             }
@@ -159,14 +159,14 @@ export default function LoginBox() {
     }
 
     // 处理第三方登录回调
-    const handleThirdPartyCallback = async () => {
+    const handleThirdPartyCallback = async (type: string) => {
         const code = getLocalStorage("authCode")
         removeLocalStorage("authCode")
         window.removeEventListener("storage", () => {
             console.log("removeEventListener")
         })
         if (code) {
-            const res = await ThirdPartyCallback({code})
+            const res = await ThirdPartyCallback({type, code})
             console.log("res:", res)
             if (res) {
                 // setupToken(res.jwt)

@@ -34,5 +34,6 @@ export const UnbindThirdParty = authDel<{
  * @param {string} redirectURL
  */
 export const ThirdPartyCallback = post<{
+    type: string,
     code: string
-}, {}>('/v1/oauth/callback')
+}, {}>('/v1/oauth/:type/callback')
