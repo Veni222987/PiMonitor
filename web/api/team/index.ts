@@ -19,7 +19,7 @@ export const CreateTeam = authPost<{
 export const UpdateTeam = authPut<{
     teamID: string,
     teamName: string
-}, {}>('/v1/team')
+}, {}>('/v1/team?teamID=:teamID&teamName=:teamName')
 
 /**
  * 解散团队
@@ -27,7 +27,7 @@ export const UpdateTeam = authPut<{
  */
 export const DismissTeam = authDel<{
     teamID: string
-}, {}>('/v1/team')
+}, {}>(`/v1/team?teamID=:teamID`)
 
 /**
  * 查看团队信息
@@ -68,8 +68,9 @@ export const GetTeamMembers = authGet<{
  */
 export const Invite = authGet<{
     teamID: string
+    type: string
 }, {
-    code: string
+    Code: string
 }>('/v1/team/invite/:type')
 
 /**

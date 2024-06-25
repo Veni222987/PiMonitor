@@ -4,4 +4,12 @@ interface TeamMember {
     username: string
 }
 
-export {TeamMember}
+interface TeamListType {
+    id: number
+    createTime: string
+    name: string
+    owner: number
+    token: string
+}
+
+export {TeamMember, TeamListType}

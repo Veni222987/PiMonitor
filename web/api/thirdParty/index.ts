@@ -1,4 +1,4 @@
-import {get} from "@/utils/APIUtils";
+import {get, post} from "@/utils/APIUtils";
 import {authDel, authGet} from "@/utils/AuthUtils";
 
 /**
@@ -29,11 +29,10 @@ export const UnbindThirdParty = authDel<{
     type: string
 }, {}>(`/v1/oauth/unbind/:type`)
 
-// /**
-//  * 第三方授权回调
-//  * @param {string} redirectURL
-//  */
-// export const ThirdPartyCallback = request({
-//     url: `/v1/oauth/callback`,
-//     method: 'GET',
-// })
+/**
+ * 第三方授权回调
+ * @param {string} redirectURL
+ */
+export const ThirdPartyCallback = post<{
+    code: string
+}, {}>('/v1/oauth/callback')
