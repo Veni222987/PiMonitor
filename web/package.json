@@ -11,6 +11,7 @@
   "dependencies": {
     "antd": "^5.17.3",
     "axios": "^1.7.2",
+    "echarts": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.3",
     "rc-slider-captcha": "^1.4.2",

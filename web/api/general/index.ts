@@ -19,7 +19,7 @@ export const VerifyLoginCode = authPost<{
     code: string
 },{
     jwt: string
-}>('v1/common/authCode/loginOrRegister')
+}>('/v1/common/authCode/loginOrRegister')
 
 /**
  *绑定验证码验证
@@ -31,7 +31,7 @@ export const VerifyBindCode = authPost<{
     code: string
 },{
     jwt: string
-}>("v1/common/authCode/bind")
+}>("/v1/common/authCode/bind")
 
 /**
  *重置密码验证码验证
@@ -43,7 +43,7 @@ export const VerifyResetCode = authPost<{
     code: string
 },{
     jwt: string
-}>("v1/common/authCode/resetPassword")
+}>("/v1/common/authCode/resetPassword")
 
 /**
  * 获取oss签名
@@ -57,4 +57,4 @@ export const GetOssSign = authGet<{
     host: string,
     dir: string,
     policy: string
-}>("v1/common/aliyun/oss/signature")
+}>("/v1/common/aliyun/oss/signature")

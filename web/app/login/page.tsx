@@ -4,13 +4,6 @@ import HeaderNav from "@/components/HeaderNav";
 import LoginBox from "@/app/login/components/LoginBox";
 
 export default function Login() {
-    // let user_info: CreateUser = {
-    //     id: '1',
-    //     email: '1826942933@qq.com',
-    //     phone: '1826942933',
-    //     avatar_url: 'https://avatars.githubusercontent.com/u/19998011?s=70&v=4',
-    //     username: 'PiMonitor',
-    // };
     let user_info = {
         id: '1',
         email: '1826942933@qq.com',
@@ -31,7 +24,7 @@ export default function Login() {
                 <div className="absolute top-0 right-0 w-full h-full bg-fade-left-to-right">
                 </div>
                 <div
-                    className="fixed left-40 flex flex-col items-start tracking-widest gap-2 h-96 p-4 text-4xl text-white rounded-xl drop-shadow-xl">
+                    className="fixed left-[10%] flex flex-col items-start tracking-widest gap-2 h-96 p-4 text-4xl text-white rounded-xl drop-shadow-xl">
                     <h1 className="text-3xl mb-2 tracking-widest">实时监控</h1>
                     <h1>24小时全天候</h1>
                     <h1 className="text-[#1a89ee] text-5xl my-1">守护<span className="text-white text-4xl">, 你的主机儿们</span></h1>

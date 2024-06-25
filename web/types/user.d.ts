@@ -10,7 +10,7 @@ interface AuthInfo {
 
 interface UserInfo {
     id: number
-    userName: string
+    username: string
     avatar: string
     phoneNumber: string
     email: string
