@@ -76,10 +76,12 @@ public class CommonController {
         String toAddress = data.getString("toAddress");
         Map<String, String> map = data.getJSONObject("map").toJavaObject(Map.class);
         try {
+            // 判断邮箱是否注册
             boolean email = userService.exists("email", toAddress);
             if (!email) {
                 return ResultUtils.error(ResultCode.NOT_FOUND_ERROR);
             }
+            // 发送邮件
             aliyunEmailService.send(template, toAddress, map);
         } catch (Exception e) {
             log.error("发送邮件失败", e);
@@ -121,7 +123,7 @@ public class CommonController {
      * @return ResultCode.SUCCESS 成功 ResultCode.REQUEST_TOO_FREQUENT 请求过于频繁 ResultCode.SYSTEM_ERROR 系统错误
      */
     @PostMapping("aliyun/sms/code")
-    public Result smsCode(@RequestParam @NotNull String phoneNumber) {
+    public Result<Object> smsCode(@RequestParam @NotNull String phoneNumber) {
         // 限制发送频率
         String s = redisService.get(phoneNumber);
         if (s != null) {

@@ -16,7 +16,7 @@ public interface TeamService {
 
     boolean delete(String userID, String teamID);
 
-    String invite(String userID, String type, String teamID) throws Exception;
+    String invite(String userID, String teamID) throws Exception;
 
     String inviteCallback(String userID, String code);
 }

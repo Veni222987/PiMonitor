@@ -28,7 +28,7 @@ public class AliyunConfig {
         private String endpoint;
         private String bucketName;
         private String host;
-        private long expireTime = 3600;
+        private long expireTime = 3600; // 签名过期时间
         public String getHost() {
             return "https://" + bucketName + "." + endpoint;
         }

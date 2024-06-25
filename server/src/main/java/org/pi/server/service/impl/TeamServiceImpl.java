@@ -19,7 +19,6 @@ import org.pi.server.service.RedisService;
 import org.pi.server.service.TeamService;
 import org.pi.server.utils.CodeUtils;
 import org.pi.server.utils.JwtUtils;
-import org.pi.server.utils.QRCodeUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +39,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
 
     private final TeamUserMapper teamUserMapper;
     private final RedisService redisService;
-    private final QRCodeUtils qrCodeUtils;
     private final HostMapper hostMapper;
     private final UserMapper userMapper;
     private final AliyunOssService aliyunOssService;
@@ -217,13 +215,12 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
     /**
      * 邀请用户加入团队
      * @param userID 用户ID
-     * @param type 邀请方式
      * @param teamID 团队ID
      * @return 邀请返回
      * @throws Exception 异常
      */
     @Override
-    public String invite(String userID, String type, String teamID) throws Exception {
+    public String invite(String userID, String teamID) throws Exception {
         // 谁可以邀请
         Team byId = getById(teamID);
         if (byId == null) {
@@ -235,21 +232,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
         String code = teamID + "-" + CodeUtils.generateVerifyCode(20, "1234567890ABCDEFGHIJKLMNOPQRSTUVWSYZ");
         // 3天过期
         redisService.set(code , code, 259200);
-        String result = "no_type";
-        switch (type) {
-            case "QRCode" -> {
-                // 生成 重定向链接
-                String link = "http://120.77.76.40:8000/api/v1/team/invite/callback?code=" + code;
-                result = qrCodeUtils.create(link, "src/main/resources/static/logo.jpg", true);
-            }
-            case "Code" -> {
-                result = code;
-            }
-            case "Link" -> {
-                result = "http://120.77.76.40:8000/api/v1/team/invite/callback?code=" + code;
-            }
-        }
-        return result;
+        return code;
     }
 
     /**

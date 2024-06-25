@@ -102,7 +102,7 @@ public class InfluxDBRepo {
                 } else {
                     assert time != null;
                     assert value != null;
-                    result.get(field).add(Map.of("time", time.getLong(ChronoField.INSTANT_SECONDS), "value", value));
+                    result.get(field).add(Map.of("time", time.getLong(ChronoField.INSTANT_SECONDS) * 1000 + time.get(ChronoField.MILLI_OF_SECOND), "value", value));
                 }
             });
         });

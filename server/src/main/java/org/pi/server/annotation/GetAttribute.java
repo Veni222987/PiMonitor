@@ -1,4 +1,5 @@
 package org.pi.server.annotation;
+import org.pi.server.aop.GetAttributeResolver;
 import java.lang.annotation.*;
 
 /**
