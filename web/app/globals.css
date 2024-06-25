@@ -13,6 +13,21 @@
       width: fit-content !important;
     }
   }
+
+  .avatar-uploader {
+    .ant-upload-select {
+      width: 66px !important;
+      height: 66px !important;
+      span {
+        font-size: 12px;
+        button {
+          div {
+            margin-top: 0 !important;
+          }
+        }
+      }
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
