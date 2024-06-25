@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 :root {
-  font-size: 12px;
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
