@@ -10,7 +10,6 @@ import {setupToken} from "@/utils/AuthUtils";
 import {ThirdPartyCallback, ThirdPartyLogin} from "@/api/thirdParty";
 import {useRouter} from "next/navigation";
 import {UserInfo} from "@/types/user";
-import WxQRLogin from "@/app/login/components/WxLogin";
 import {getLocalStorage, removeLocalStorage} from "@/utils/StorageUtils";
 
 enum codeType {
