@@ -16,9 +16,12 @@ export default function CallbackPage() {
 
         // 使用示例
         let code = getUrlParameter('code');
+        let state = getUrlParameter('state');
 
         // 将code存到Localstorage中
         setLocalStorage('authCode', code);
+        // 将state存到Localstorage中
+        setLocalStorage('authState', state);
     }, []);
 
     return (

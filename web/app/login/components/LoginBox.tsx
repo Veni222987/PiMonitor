@@ -162,11 +162,13 @@ export default function LoginBox() {
     const handleThirdPartyCallback = async (type: string) => {
         const code = getLocalStorage("authCode")
         removeLocalStorage("authCode")
+        const state = getLocalStorage("authState")
+        removeLocalStorage("authState")
         window.removeEventListener("storage", () => {
             console.log("removeEventListener")
         })
-        if (code) {
-            const res = await ThirdPartyCallback({type, code})
+        if (code && state) {
+            const res = await ThirdPartyCallback({type, code, state})
             console.log("res:", res)
             if (res) {
                 // setupToken(res.jwt)

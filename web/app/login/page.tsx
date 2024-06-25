@@ -36,7 +36,9 @@ export default function Login() {
                     </div>
                 </div>
                 <LoginBox/>
-                <div className="fixed bottom-6 flex-1 flex items-center text-white/80">Copyright © Team200PI</div>
+                <div className="fixed bottom-2 flex-1 items-center text-white/80 text-[10px]">
+                    <p>Copyright © Team200PI — 闽ICP备2023013469号-2</p>
+                </div>
             </section>
         </main>
     );
