@@ -5,10 +5,13 @@ import React, {useEffect, useRef, useState} from "react";
 import CaptchaModal from "@/app/login/components/CaptchaModal";
 import {useDebounce} from "@/hooks/useDebounce";
 import {SendCode, VerifyLoginCode} from "@/api/general";
-import {Login} from "@/api/user";
+import {GetUserInfo, Login} from "@/api/user";
 import {setupToken} from "@/utils/AuthUtils";
-import {ThirdPartyLogin} from "@/api/thirdParty";
+import {ThirdPartyCallback, ThirdPartyLogin} from "@/api/thirdParty";
 import {useRouter} from "next/navigation";
+import {UserInfo} from "@/types/user";
+import WxQRLogin from "@/app/login/components/WxLogin";
+import {getLocalStorage, removeLocalStorage} from "@/utils/StorageUtils";
 
 enum codeType {
 
@@ -95,11 +98,20 @@ export default function LoginBox() {
         }
     }
 
+    // 将用户信息存储到localstorage
+    const saveUserInfo = (user: UserInfo) => {
+        localStorage.setItem("userInfo", JSON.stringify(user))
+    }
+
     // 验证码登录
     const handleCodeLogin = async () => {
         try {
             const {jwt} = await VerifyLoginCode({account, code})
             setupToken(jwt)
+            // 获取用户信息
+            const {user} = await GetUserInfo()
+            // 将用户信息存储到localstorage
+            saveUserInfo(user)
             // 路由跳转
             router.push("/")
         } catch (e) {
@@ -114,8 +126,10 @@ export default function LoginBox() {
     // 密码登录
     const handlePasswordLogin = async () => {
         try {
-            const {jwt} = await Login({account, password: code})
+            const {jwt, user} = await Login({account, password})
             setupToken(jwt)
+            // 将用户信息存储到localstorage
+            saveUserInfo(user)
             // 路由跳转
             router.push("/")
         } catch (e) {
@@ -123,7 +137,7 @@ export default function LoginBox() {
         }
     }
 
-    // let authWindow = null;
+    let authWindow: any = null;
 
     // 第三方登录
     const handleThirdPartyLogin = async (type: string) => {
@@ -131,15 +145,12 @@ export default function LoginBox() {
             const {redirectURL} = await ThirdPartyLogin({type})
             console.log("redirectURL:", redirectURL)
             try {
-                // const {user} = await ThirdPartyCallback({redirectURL})
-                // console.log("user:", user)
-                // const res = await axios.get(redirectURL)
-                // console.log("res:", res)
-                // authWindow = window.open(
-                //     redirectURL,
-                //     "_blank",
-                //     "toolbar=no,width=800, height=600"
-                // );
+                authWindow = window.open(
+                    redirectURL,
+                    "_blank",
+                    "toolbar=no,width=800, height=600"
+                );
+                window.addEventListener("storage",() => handleThirdPartyCallback())
             } catch (e) {
                 console.error("LoginBox failed:", e)
             }
@@ -148,11 +159,35 @@ export default function LoginBox() {
         }
     }
 
-    // const handleCloseWindow = () => {
-    //     if (authWindow) {
-    //         authWindow.close();
-    //     }
-    // };
+    // 处理第三方登录回调
+    const handleThirdPartyCallback = async () => {
+        const code = getLocalStorage("authCode")
+        removeLocalStorage("authCode")
+        window.removeEventListener("storage", () => {
+            console.log("removeEventListener")
+        })
+        if (code) {
+            const res = await ThirdPartyCallback({code})
+            console.log("res:", res)
+            if (res) {
+                // setupToken(res.jwt)
+                // // 获取用户信息
+                // const {user} = await GetUserInfo()
+                // // 将用户信息存储到localstorage
+                // saveUserInfo(user)
+                // 路由跳转
+                router.push("/")
+            }
+            return;
+        }
+        throw new Error("授权码获取失败")
+    }
+
+    const handleCloseWindow = () => {
+        if (authWindow) {
+            authWindow.close();
+        }
+    };
 
     useEffect(() => {
         if (isVerify) {
@@ -176,9 +211,18 @@ export default function LoginBox() {
         }
     }, [isSendCode, time])
 
+    // github点击授权登录
+    const handleGithubLogin = async () => {
+        try {
+            const {redirectURL} = await ThirdPartyLogin({type: "github"})
+        } catch (e) {
+            console.error("LoginBox failed:", e)
+        }
+    }
+
     return (
         <div
-            className="fixed right-24 flex flex-col items-start gap-3 w-80 h-80 mt-10 rounded-xl drop-shadow-xl">
+            className="fixed right-[5%] flex flex-col items-start gap-3 w-80 h-80 mt-10 rounded-xl drop-shadow-xl">
             <h1 className="text-3xl text-white mb-4">登录畅享更多权益</h1>
             {/*<button onClick={handleCloseWindow}>close window</button>*/}
             {
@@ -203,8 +247,10 @@ export default function LoginBox() {
             {
                 isPasswordLogin ?
                     <div className="flex relative w-full aspect-[8]">
-                        <input className="w-full rounded-lg text-white text-[12px] p-2 bg-[#333645]/50"
-                               placeholder={"请输入密码"}/>
+                        <input
+                            onChange={handlePasswordChange}
+                            className="w-full rounded-lg text-white text-[12px] p-2 bg-[#333645]/50"
+                            placeholder={"请输入密码"}/>
                     </div>
                     :
                     <div className="flex relative w-full aspect-[8]">
