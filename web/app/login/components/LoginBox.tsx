@@ -10,7 +10,7 @@ import {setupToken} from "@/utils/AuthUtils";
 import {ThirdPartyCallback, ThirdPartyLogin} from "@/api/thirdParty";
 import {useRouter} from "next/navigation";
 import {UserInfo} from "@/types/user";
-import {getLocalStorage, removeLocalStorage} from "@/utils/StorageUtils";
+import {getLocalStorage, removeLocalStorage, setLocalStorage} from "@/utils/StorageUtils";
 
 enum codeType {
 
@@ -144,12 +144,13 @@ export default function LoginBox() {
             const {redirectURL} = await ThirdPartyLogin({type})
             console.log("redirectURL:", redirectURL)
             try {
-                authWindow = window.open(
-                    redirectURL,
-                    "_blank",
-                    "toolbar=no,width=800, height=600"
-                );
-                window.addEventListener("storage",() => handleThirdPartyCallback(type))
+                router.replace(redirectURL)
+                // authWindow = window.open(
+                //     redirectURL,
+                //     "_blank",
+                //     "toolbar=no,width=800, height=600"
+                // );
+                // window.addEventListener("storage",() => handleThirdPartyCallback(type))
             } catch (e) {
                 console.error("LoginBox failed:", e)
             }
@@ -160,6 +161,7 @@ export default function LoginBox() {
 
     // 处理第三方登录回调
     const handleThirdPartyCallback = async (type: string) => {
+        console.log("handleThirdPartyCallback")
         const code = getLocalStorage("authCode")
         removeLocalStorage("authCode")
         const state = getLocalStorage("authState")
@@ -223,23 +225,25 @@ export default function LoginBox() {
 
     return (
         <div
-            className="fixed right-[5%] flex flex-col items-start gap-3 w-80 h-80 mt-10 rounded-xl drop-shadow-xl">
-            <h1 className="text-3xl text-white mb-4">登录畅享更多权益</h1>
-            {/*<button onClick={handleCloseWindow}>close window</button>*/}
+            className="fixed right-[5%] flex flex-col items-start gap-3 w-[400px] aspect-square mt-12 rounded-xl drop-shadow-xl">
+            {/*<button className="absolute top-0 right-0 text-white/80"*/}
+            {/*        onClick={() => localStorage.setItem('test', 1)}>X</button>*/}
+            {/*<button onClick={() => localStorage.removeItem('test')}>github</button>*/}
+            <h1 className="text-4xl text-white mb-4">登录畅享免费监控</h1>
             {
                 isPasswordLogin ?
                     <div className="flex relative w-full aspect-[8]">
-                        <input className="w-full rounded-lg text-white text-[12px] p-2 bg-[#333645]/50"
+                        <input className="w-full rounded-lg text-white p-2 bg-[#333645]/50"
                                placeholder={"请输入邮箱/手机号（国际号码加区号）"}/>
                     </div>
                     :
                     <div className="flex relative w-full aspect-[8]">
                         <input
                             onChange={handleAccountChange}
-                            className="w-full rounded-lg text-[12px] p-2 bg-[#333645]/50 text-white"
+                            className="w-full rounded-lg p-2 bg-[#333645]/50 text-white"
                             placeholder={"请输入邮箱/手机号（国际号码加区号）"}/>
                         <button
-                            className={`absolute right-0 h-full text-white text-[12px] px-3 ${isSendCode ? "disabled" : ""}`}
+                            className={`absolute right-0 h-full text-white px-3 ${isSendCode ? "disabled" : ""}`}
                             onClick={() => showModal()}
                             disabled={isSendCode}
                         >{!isSendCode ? "获取验证码" : `${time}S`}</button>
@@ -250,7 +254,7 @@ export default function LoginBox() {
                     <div className="flex relative w-full aspect-[8]">
                         <input
                             onChange={handlePasswordChange}
-                            className="w-full rounded-lg text-white text-[12px] p-2 bg-[#333645]/50"
+                            className="w-full rounded-lg text-white p-2 bg-[#333645]/50"
                             placeholder={"请输入密码"}/>
                     </div>
                     :
@@ -258,18 +262,18 @@ export default function LoginBox() {
                         <input
                             onChange={handleCodeChange}
                             maxLength={6}
-                            className="w-full rounded-lg text-white text-[12px] p-2 bg-[#333645]/50"
+                            className="w-full rounded-lg text-white p-2 bg-[#333645]/50"
                             placeholder={"请输入验证码"}/>
                     </div>
             }
             <Button
-                className="w-full my-3"
+                className="w-full h-11 my-3"
                 type="primary"
                 onClick={
                     isPasswordLogin ? handlePasswordLogin : handleCodeLogin
                 }>登录 / 注册</Button>
             <div className="w-full flex items-center">
-                <span className="text-gray-300 text-[12px] text-center">其他登录：</span>
+                <span className="text-gray-300 text-center">其他登录：</span>
                 <div className="flex gap-2 justify-center">
                     <button className="hover:scale-110" onClick={()=>handleThirdPartyLogin("github")}>
                         <img src="/gitub.svg"/>
@@ -285,7 +289,7 @@ export default function LoginBox() {
                         setCode("")
                         setPassword("")
                     }}
-                    className="text-white/80 text-[12px] ml-auto hover:text-white">
+                    className="text-white/80 ml-auto hover:text-white">
                     {isPasswordLogin ? "验证码登录" : "密码登录"}
                 </button>
             </div>

@@ -1,9 +1,11 @@
 "use client";
-
 import {useEffect} from "react";
-import {setLocalStorage} from "@/utils/StorageUtils";
+import {ThirdPartyCallback} from "@/api/thirdParty";
+import {useRouter} from "next/navigation";
 
 export default function CallbackPage() {
+
+    const router = useRouter();
 
     useEffect(() => {
         // 使用原生方法从?code=xxx中获取code
@@ -18,10 +20,29 @@ export default function CallbackPage() {
         let code = getUrlParameter('code');
         let state = getUrlParameter('state');
 
-        // 将code存到Localstorage中
-        setLocalStorage('authCode', code);
-        // 将state存到Localstorage中
-        setLocalStorage('authState', state);
+        // // 将code存到Localstorage中
+        // setLocalStorage('authCode', code);
+        // // 将state存到Localstorage中
+        // setLocalStorage('authState', state);
+
+        const handleCallback = async () => {
+            try {
+                const res = await ThirdPartyCallback({
+                    type: window.location.pathname.split('/')[1],
+                    code,
+                    state
+                });
+                console.log('res:', res);
+                // 跳转到首页
+                router.push('/');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        if (code && state) {
+            handleCallback().then()
+        }
     }, []);
 
     return (

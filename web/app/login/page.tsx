@@ -25,18 +25,18 @@ export default function Login() {
                 </div>
                 <div
                     className="fixed left-[10%] flex flex-col items-start tracking-widest gap-2 h-96 p-4 text-4xl text-white rounded-xl drop-shadow-xl">
-                    <h1 className="text-3xl mb-2 tracking-widest">实时监控</h1>
-                    <h1>24小时全天候</h1>
-                    <h1 className="text-[#1a89ee] text-5xl my-1">守护<span className="text-white text-4xl">, 你的主机儿们</span></h1>
-                    <h1>值得信赖的助手</h1>
-                    <p className="text-[10px] leading-4 w-full opacity-85 mt-4 tracking-wide">Agent部署后可以自动扫描、发现和识别此主机上安装的所有服务和组件。</p>
+                    <h1 className="text-5xl mb-2 tracking-widest">实时监控</h1>
+                    <h1 className="text-4xl">24小时全天候</h1>
+                    <h1 className="text-[#1a89ee] text-6xl my-1">守护<span className="text-white text-5xl">, 你的主机儿们</span></h1>
+                    <h1 className="text-4xl">值得信赖的助手</h1>
+                    <p className="text-[12px] leading-4 w-full opacity-85 mt-4 tracking-wide">Agent部署后可以自动扫描、发现和识别此主机上安装的所有服务和组件。</p>
                     <div className="flex gap-5 w-full mt-4">
                         <button className="text-[12px] leading-4 w-32 aspect-[8] p-2 border-[1px] rounded-2xl">关于我们</button>
                         <button className="text-[12px] leading-4 w-32 aspect-[8] bg-blue-600 p-2 rounded-2xl">开始探索</button>
                     </div>
                 </div>
                 <LoginBox/>
-                <div className="fixed bottom-2 flex-1 items-center text-white/80 text-[10px]">
+                <div className="fixed bottom-2 flex-1 items-center text-white/80 text-[12px]">
                     <p>Copyright © Team200PI — 闽ICP备2023013469号-2</p>
                 </div>
             </section>
