@@ -1,18 +1,18 @@
-interface CpuInfo {
+interface CpuInfoType {
     cpuName: string
     core: string
     frequency: string
 }
 
-interface RecordInfo {
+interface RecordInfoType {
     time: number
     value: number
 }
 
-interface AgentInfo {
+interface AgentInfoType {
     id: number
     mac: string
-    cpu: CpuInfo
+    cpu: CpuInfoType
     memory: number
     disk: number
     networkCard: string[]
@@ -22,4 +22,4 @@ interface AgentInfo {
     hostname: string
 }
 
-export type {CpuInfo, RecordInfo, AgentInfo}
+export type {CpuInfoType, RecordInfoType, AgentInfoType}
