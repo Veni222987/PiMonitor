@@ -8,14 +8,14 @@ import {TeamListType} from "@/types/team";
  * @param {string} account
  * @param {string} password
  */
-export const Login = post<{
+export const Login = get<{
     account: string,
     password: string
 }, {
     jwt: string,
     auths: AuthInfo[],
     user: UserInfo
-}>('/v1/users/login')
+}>('/v1/users/login?account=:account&password=:password')
 
 /**
  * 重置密码

@@ -2,10 +2,22 @@
 import {useEffect} from "react";
 import {ThirdPartyCallback} from "@/api/thirdParty";
 import {useRouter} from "next/navigation";
+import {AuthInfo, UserInfo} from "@/types/user";
+import {setupToken} from "@/utils/AuthUtils";
 
 export default function CallbackPage() {
 
     const router = useRouter();
+
+    // 将用户信息存到Localstorage中
+    const saveUserInfo = (user: UserInfo) => {
+        localStorage.setItem("userInfo", JSON.stringify(user))
+    }
+
+    // 将授权信息存到Localstorage中
+    const saveAuthInfo = (auths: AuthInfo[]) => {
+        localStorage.setItem("auths", JSON.stringify(auths))
+    }
 
     useEffect(() => {
         // 使用原生方法从?code=xxx中获取code
@@ -27,12 +39,14 @@ export default function CallbackPage() {
 
         const handleCallback = async () => {
             try {
-                const res = await ThirdPartyCallback({
+                const {jwt, auths, user} = await ThirdPartyCallback({
                     type: window.location.pathname.split('/')[1],
                     code,
                     state
                 });
-                console.log('res:', res);
+                setupToken(jwt);
+                saveUserInfo(user);
+                saveAuthInfo(auths);
                 // 跳转到首页
                 router.push('/');
             } catch (e) {

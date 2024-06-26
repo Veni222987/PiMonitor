@@ -233,8 +233,10 @@ export default function LoginBox() {
             {
                 isPasswordLogin ?
                     <div className="flex relative w-full aspect-[8]">
-                        <input className="w-full rounded-lg text-white p-2 bg-[#333645]/50"
-                               placeholder={"请输入邮箱/手机号（国际号码加区号）"}/>
+                        <input
+                            onChange={handleAccountChange}
+                            className="w-full rounded-lg text-white p-2 bg-[#333645]/50"
+                            placeholder={"请输入邮箱/手机号（国际号码加区号）"}/>
                     </div>
                     :
                     <div className="flex relative w-full aspect-[8]">

@@ -1,5 +1,6 @@
 import {get, post} from "@/utils/APIUtils";
 import {authDel, authGet} from "@/utils/AuthUtils";
+import {AuthInfo, UserInfo} from "@/types/user";
 
 /**
  * 第三方登录
@@ -35,8 +36,12 @@ export const UnbindThirdParty = authDel<{
  * @param {string} code
  * @param {string} state
  */
-export const ThirdPartyCallback = post<{
+export const ThirdPartyCallback = get<{
     type: string,
     code: string,
     state: string
-}, {}>('/v1/oauth/:type/callback')
+}, {
+    jwt: string,
+    auths: AuthInfo[],
+    user: UserInfo
+}>('/v1/oauth/:type/callback?code=:code&state=:state')

@@ -1,5 +1,5 @@
 import {authGet, authPut} from "@/utils/AuthUtils";
-import {CpuInfo, RecordInfo} from "@/types/agent";
+import {CpuInfoType, RecordInfoType} from "@/types/agent";
 
 /**
  * 获取主机基本信息
@@ -10,7 +10,7 @@ export const GetAgentInfo = authGet<{
 }, {
     id: number,
     mac: string
-    cpu: CpuInfo,
+    cpu: CpuInfoType,
     memory: number,
     disk: number,
     networkCard: string[],
@@ -31,11 +31,11 @@ export const GetHostUtilization = authGet<{
     startTime: number,
     endTime: number
 }, {
-    disk_percent: RecordInfo[],
-    network_rate: RecordInfo[],
-    tcp_connection: RecordInfo[],
-    mem_percent: RecordInfo[],
-    cpu_percent: RecordInfo[]
+    disk_percent: RecordInfoType[],
+    network_rate: RecordInfoType[],
+    tcp_connection: RecordInfoType[],
+    mem_percent: RecordInfoType[],
+    cpu_percent: RecordInfoType[]
 }>("/v1/agents/usage")
 
 /**
@@ -52,7 +52,7 @@ export const GetAgentList = authGet<{
     records: {
         id: number,
         mac: string,
-        cpu: CpuInfo,
+        cpu: CpuInfoType,
         memory: number,
         disk: number,
         networkCard: string[],
@@ -76,6 +76,6 @@ export const GetMetricInfo = authGet<{
     endTime: number
 }, {
     metric: string,
-    data: RecordInfo[]
+    data: RecordInfoType[]
 }[]
 >("/v1/agents/services/info")
