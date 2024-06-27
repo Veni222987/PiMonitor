@@ -42,7 +42,7 @@ public class PerformanceController {
             return ResultUtils.error(ResultCode.PARAMS_ERROR);
         }
         try {
-            Map<String, List<Map<String, Object>>> performances = informationService.getPerformance(userID, agentID, startTime, endTime);
+            List<Map<String, Object>> performances = informationService.getPerformance(userID, agentID, startTime, endTime);
             return ResultUtils.success(performances);
         } catch (Exception e) {
             return ResultUtils.error(ResultCode.NO_AUTH_ERROR);

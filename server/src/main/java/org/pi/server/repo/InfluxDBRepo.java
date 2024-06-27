@@ -14,10 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoField;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -89,20 +86,25 @@ public class InfluxDBRepo {
      * @param tables 查询结果
      * @return 解析后的结果
      */
-    public Map<String, List<Map<String, Object>>> parse(@NotNull List<FluxTable> tables) {
-        Map<String, List<Map<String, Object>>> result = new HashMap<>();
+    public Map<String, Map<String, Object>> parse(@NotNull List<FluxTable> tables) {
+        Map<String, Map<String, Object>> result = new HashMap<>();
         tables.forEach(table -> {
             table.getRecords().forEach(record -> {
                 // 获取一条记录
                 String field = record.getField();
                 Instant time = record.getTime();
                 Object value = record.getValue();
+
                 if (!result.containsKey(field)) {
-                    result.put(field, new LinkedList<>());
+                    Map<String, Object> values = record.getValues();
+                    Map<String, Object> map = new HashMap<>();
+                    if (values.containsKey("metric_type")) {
+                        map.put("metric_type", values.get("metric_type"));
+                    }
+                    map.put("data", new ArrayList<>());
+                    result.put(field, map);
                 } else {
-                    assert time != null;
-                    assert value != null;
-                    result.get(field).add(Map.of("time", time.getLong(ChronoField.INSTANT_SECONDS) * 1000 + time.get(ChronoField.MILLI_OF_SECOND), "value", value));
+                    ((List)result.get(field).get("data")).add(Map.of("time", time.getLong(ChronoField.INSTANT_SECONDS) * 1000 + time.get(ChronoField.MILLI_OF_SECOND), "value", value));
                 }
             });
         });
