@@ -69,7 +69,7 @@ export default function User() {
                             <span className="w-1/6 text-right text-[#555]">头像</span>
                             <Avatar
                                 size={64}
-                                src={"https://img0.baidu.com/it/u=1403557207,620046077&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1718730000&t=0d376f0a88576629157efa9d0bed788e"}
+                                src={userInfo.avatar !== ('' || null) ? "https://img0.baidu.com/it/u=1403557207,620046077&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1718730000&t=0d376f0a88576629157efa9d0bed788e" : userInfo.avatar}
                             />
                         </div>
                         <div className="w-full flex gap-6">
@@ -126,13 +126,13 @@ export default function User() {
                         <div className="w-full flex gap-6">
                             <span className="w-1/6 text-right text-[#555]">邮箱</span>
                             <span className="">
-                                {userInfo.email === '' ? '未设置' : userInfo.email}
+                                {userInfo.email === ('' || null) ? '未设置' : userInfo.email}
                             </span>
                         </div>
                         <div className="w-full flex gap-6">
                             <span className="w-1/6 text-right text-[#555]">手机号</span>
                             <span className="">
-                                 {userInfo.phoneNumber === '' ? '未设置' : userInfo.phoneNumber}
+                                 {userInfo.phoneNumber === ('' || null) ? '未设置' : userInfo.phoneNumber}
                             </span>
                         </div>
                         <div className="w-full flex items-center gap-6">
@@ -145,13 +145,13 @@ export default function User() {
                     <div className={`flex w-3/5 flex-col items-start gap-4 ${!isAccountEdit ? 'hidden' : 'block'}`}>
                         <div className="w-full flex gap-6">
                             <span className="w-1/6 text-right text-[#555]">邮箱</span>
-                            {userInfo.email === '' ?
+                            {userInfo.email === ('' || null) ?
                                 <Button type="primary">绑定邮箱</Button>
                                 : <Input className="w-4/6" placeholder="请输入邮箱" disabled={true} value={userInfo.email}/>}
                         </div>
                         <div className="w-full flex gap-6">
                             <span className="w-1/6 text-right text-[#555]">手机号</span>
-                            {userInfo.phoneNumber === '' ?
+                            {userInfo.phoneNumber === ('' || null) ?
                                 <Button type="primary">绑定手机号</Button>
                                 : <Input className="w-4/6" placeholder="请输入手机号" disabled={true} value={userInfo.phoneNumber}/>}
                         </div>
@@ -164,7 +164,7 @@ export default function User() {
                 <Button type="primary" className={`mt-4 mx-auto ${isAccountEdit ? 'block' : 'hidden'}`}>保存</Button>
             </div>
             <h1 className="text-2xl mr-auto mt-4 mb-4">第三方账号</h1>
-            <div className="w-3/5">
+            <div className="w-3/5 mb-8">
                 <button
                     className="absolute right-12 rounded-xl bg-blue-400 py-1 px-2 text-white text-[12px]"
                     onClick={() => setThirdPartyEdit(!isThirdPartyEdit)}
