@@ -7,7 +7,6 @@ import org.pi.server.mapper.HostMapper;
 import org.pi.server.mapper.TeamUserMapper;
 import org.pi.server.model.entity.Host;
 import org.pi.server.model.entity.TeamUser;
-import org.pi.server.model.enums.HostStatusEnum;
 import org.pi.server.repo.InfluxDBRepo;
 import org.pi.server.service.InformationService;
 import org.pi.server.utils.FluxQueryBuilder;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +32,15 @@ public class InformationServiceImpl implements InformationService {
 
     /**
      * 获取性能数据
-     * @param userID 用户ID
-     * @param agentID 主机ID
+     *
+     * @param userID    用户ID
+     * @param agentID   主机ID
      * @param startTime 开始时间
-     * @param endTime 结束时间
+     * @param endTime   结束时间
      * @return 性能数据
      */
     @Override
-    public Map<String, List<Map<String, Object>>> getPerformance(String userID, String agentID, Long startTime, Long endTime) {
+    public List<Map<String, Object>> getPerformance(String userID, String agentID, Long startTime, Long endTime) {
         checkPermission(userID, agentID);
         FluxQueryBuilder builder = new FluxQueryBuilder();
         String build = builder.fromBucket("myBucket")
@@ -47,7 +48,13 @@ public class InformationServiceImpl implements InformationService {
                 .filterMeasurementByRegex("performance_" + agentID)
                 .build();
         List<FluxTable> tables = influxDBRepo.query(build);
-        return influxDBRepo.parse(tables);
+        List<Map<String, Object>> list = new LinkedList<>();
+        Map<String, Map<String, Object>> parse = influxDBRepo.parse(tables);
+        parse.forEach((k, v) -> {
+            v.put("metric", k);
+            list.add(v);
+        });
+        return list;
     }
 
     /**
@@ -68,14 +75,11 @@ public class InformationServiceImpl implements InformationService {
                 .build();
         List<FluxTable> tables = influxDBRepo.query(build);
         List<Map<String, Object>> list = new LinkedList<>();
-        Map<String, List<Map<String, Object>>> parse = influxDBRepo.parse(tables);
+        Map<String, Map<String, Object>> parse = influxDBRepo.parse(tables);
         parse.forEach((k, v) -> {
-            list.add(
-                    Map.of(
-                            "metric", k,
-                            "data", v
-                    )
-            );
+            v.put("metric", k);
+            System.out.println(v.toString());
+            list.add(v);
         });
         return list;
     }
