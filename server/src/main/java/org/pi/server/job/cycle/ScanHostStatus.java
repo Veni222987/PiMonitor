@@ -59,8 +59,15 @@ public class ScanHostStatus {
             alarmQueryWrapper.eq("host_id", host.getId());
             // 查询所有告警
             List<Alarm> alarms = alarmMapper.selectList(alarmQueryWrapper);
-            // 以alarm_type为 key ， alarm 为 value 转成 map
-            Map<AlarmTypeEnum, Alarm> alarmMap = alarms.stream().collect(Collectors.toMap(Alarm::getAlarmType, alarm -> alarm));
+            List<Alarm> hostAlarms =  new LinkedList<>();
+            List<Alarm> otherAlarms = new LinkedList<>();
+            for (Alarm alarm : alarms) {
+                if (alarm.getAlarmType() == AlarmTypeEnum.HOST) {
+                    hostAlarms.add(alarm);
+                } else {
+                    otherAlarms.add(alarm);
+                }
+            }
 
             // 处理主机状态
             if (host.getStatus() == HostStatusEnum.UNMONITORED) {
@@ -74,13 +81,9 @@ public class ScanHostStatus {
                 if (lastTime.plusMinutes(2).isBefore(now)) {
                     // 超过 2 分钟未更新状态，设置为离线
                     host.setStatus(HostStatusEnum.UNMONITORED);
-                    log.error(alarmMap.toString());
-                    log.error(AlarmTypeEnum.HOST.toString());
                     // 查询是否有离线告警
-                    if (alarmMap.containsKey(AlarmTypeEnum.HOST)) {
-                        System.out.println(alarmMap.toString());
-                        System.out.println(AlarmTypeEnum.HOST);
-                        Alarm alarm = alarmMap.get(AlarmTypeEnum.HOST);
+                    if (!hostAlarms.isEmpty()) {
+                        Alarm alarm = hostAlarms.get(0);
                         try {
                             aliyunEmailService.send("alarm", alarm.getNotificationAccount(),
                                 Map.of("alarmType", alarm.getAlarmType().toString(),
@@ -94,9 +97,8 @@ public class ScanHostStatus {
                 } else {
                     // 检查主机使用情况
                     // todo 检查主机使用情况
-                    alarmMap.remove(AlarmTypeEnum.HOST);
-                    alarmMap.forEach(
-                        (alarmType, alarm) -> {
+                    otherAlarms.forEach(
+                        (alarm) -> {
                             Long end = Instant.now().toEpochMilli();
                             Long start = end - alarm.getDuration();
                             FluxQueryBuilder fluxQueryBuilder = new FluxQueryBuilder();;
