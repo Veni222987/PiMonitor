@@ -7,6 +7,7 @@ import {setupToken} from "@/utils/AuthUtils";
 
 export default function CallbackPage() {
 
+    // 初始化router
     const router = useRouter();
 
     // 将用户信息存到Localstorage中
@@ -28,22 +29,20 @@ export default function CallbackPage() {
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
 
-        // 使用示例
+        // 存储code和state
         let code = getUrlParameter('code');
         let state = getUrlParameter('state');
 
-        // // 将code存到Localstorage中
-        // setLocalStorage('authCode', code);
-        // // 将state存到Localstorage中
-        // setLocalStorage('authState', state);
-
+        // 处理第三方回调
         const handleCallback = async () => {
             try {
+                // 向服务端发生校验数据并接受回调信息
                 const {jwt, auths, user} = await ThirdPartyCallback({
                     type: window.location.pathname.split('/')[1],
                     code,
                     state
                 });
+                // 数据本地化存储
                 setupToken(jwt);
                 saveUserInfo(user);
                 saveAuthInfo(auths);
@@ -54,6 +53,7 @@ export default function CallbackPage() {
             }
         }
 
+        // 非空校验
         if (code && state) {
             handleCallback().then()
         }

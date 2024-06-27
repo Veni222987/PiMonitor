@@ -283,6 +283,9 @@ export default function LoginBox() {
                     <button className="hover:scale-110" onClick={()=>handleThirdPartyLogin("gitee")}>
                         <img src="/gitee.svg"/>
                     </button>
+                    <button className="hover:scale-110" onClick={()=>handleThirdPartyLogin("wechat_open")}>
+                        <img src="/wechat.svg"/>
+                    </button>
                 </div>
                 <button
                     onClick={() => {
