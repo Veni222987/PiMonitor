@@ -31,12 +31,9 @@ export const GetHostUtilization = authGet<{
     startTime: number,
     endTime: number
 }, {
-    disk_percent: RecordInfoType[],
-    network_rate: RecordInfoType[],
-    tcp_connection: RecordInfoType[],
-    mem_percent: RecordInfoType[],
-    cpu_percent: RecordInfoType[]
-}>("/v1/agents/usage")
+    metric: string,
+    data: RecordInfoType[]
+}[]>("/v1/agents/usage")
 
 /**
  * 获取主机列表
@@ -76,6 +73,7 @@ export const GetMetricInfo = authGet<{
     endTime: number
 }, {
     metric: string,
+    metric_type: string,
     data: RecordInfoType[]
 }[]
 >("/v1/agents/services/info")
