@@ -72,7 +72,7 @@ export default function HeadBar() {
                 <Menu.Item key="1" icon={<PieChartOutlined/>}>
                     <Link href="/dashboard">Dashboard</Link>
                 </Menu.Item>
-                <Menu.Item key="2" icon={<DesktopOutlined/>}>
+                <Menu.Item key="2" icon={<UserOutlined/>}>
                     <Link href="/user">User</Link>
                 </Menu.Item>
                 <Menu.Item key="3" icon={<TeamOutlined/>}>
