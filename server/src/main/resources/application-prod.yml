@@ -1,30 +1,7 @@
 # 线上配置文件
 server:
   port: 8000
-spring:
-  # MySQL配置
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://120.77.76.40:3306/pim
-    username: root
-    password: ZAQ1@wsx
 mybatis-plus:
   configuration:
     # 生产环境关闭日志
     log-impl: ''
-
-justauth:
-  enabled: true
-  type:
-    GITEE:
-      client-id: aea875917e89b990933fcdb538cd5853558b659d498f7b12fb22930caf257503
-      client-secret: 38b42e453a557a9ca080935d684957fdf7aaadfd3f71e8b57441386d22654e91
-      redirect-uri: https://api.pimonitor.top/gitee/callback
-    GITHUB:
-      client-id: Ov23liEzH0f0ni9lgNvO
-      client-secret: f8112e83117d4d53fd669055428470c0d40733ba
-      redirect-uri: https://api.pimonitor.top/github/callback
-    WECHAT_OPEN:
-      client-id: wxcda274a39902039c
-      client-secret: 0867d7b9a2b9e2b1d953adae1322f7e5
-      redirect-uri: https://api.pimonitor.top/wechat_open/callback
