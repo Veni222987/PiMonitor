@@ -4,6 +4,7 @@ import {GetUserInfo, ModifyUserInfo} from "@/api/user";
 import {AuthInfo, UserInfo} from "@/types/user";
 import {Avatar, Button, Input} from "antd";
 import AvatarUploader from "@/app/(main)/user/components/AvatarUploader";
+import {removeToken} from "@/utils/AuthUtils";
 
 export default function User() {
     // 第三方授权信息
@@ -50,6 +51,18 @@ export default function User() {
             setUserInfoEdit(false)
         } catch (error) {
             console.error('Error saving user info: ', error);
+        }
+    }
+
+    // 退出登录
+    const logout = async () => {
+        try {
+            removeToken()
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('auths');
+            window.location.href = '/login';
+        } catch (error) {
+            console.error('Error logging out: ', error);
         }
     }
 
@@ -181,6 +194,14 @@ export default function User() {
                         </div>
                     )
                 })}
+            </div>
+            <div className="w-full flex justify-center mt-8">
+                <Button
+                    size={"large"}
+                    onClick={() => logout()}
+                >
+                    退出登录
+                </Button>
             </div>
         </div>
     );

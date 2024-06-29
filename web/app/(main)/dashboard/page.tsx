@@ -133,7 +133,19 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchMetricInfo = async () => {
             try {
-                const res = await GetMetricInfo({agentID: selectedAgentID, startTime: 1717396038, endTime: 1717855275});
+                let startTime = Math.floor(new Date().getTime() / 1000);
+                if (selectedTimeRange === '1') {
+                    startTime = startTime - 3600;
+                } else if (selectedTimeRange === '2') {
+                    startTime = startTime - 43200;
+                } else if (selectedTimeRange === '3') {
+                    startTime = startTime - 86400;
+                } else if (selectedTimeRange === '4') {
+                    startTime = startTime - 604800;
+                } else {
+                    startTime = startTime - 2592000;
+                }
+                const res = await GetMetricInfo({agentID: selectedAgentID, startTime, endTime: Math.floor(new Date().getTime() / 1000)});
                 console.log(res);
                 setMetricInfo(res);
                 // 遍历metric服务信息，从[{metric: '', data[]}]中获取服务数组
