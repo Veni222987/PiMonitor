@@ -23,6 +23,24 @@ func TestGetComputerInfo(t *testing.T) {
 }
 
 func TestGetComputerInfoWithContext(t *testing.T) {
+	testCases := []struct {
+		name    string
+		wantErr bool
+	}{
+		{
+			name:    "windows",
+			wantErr: false,
+		},
+		{
+			name:    "darwin",
+			wantErr: false,
+		},
+		{
+			name:    "linux",
+			wantErr: false,
+		},
+	}
+
 	computerInfo, err := GetComputerInfoWithContext(context.Background())
 	if err != nil {
 		t.Errorf("get computer info err%s", err)
