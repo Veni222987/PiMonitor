@@ -1,14 +1,12 @@
 package repo
 
 import (
-	"Agent/parautil"
 	"encoding/json"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/Veni222987/pimetric"
 )
@@ -16,6 +14,7 @@ import (
 func Scan(pArr []int) []*pimetric.Metricx {
 	rsp := make([]*pimetric.Metricx, 0)
 	wg := &sync.WaitGroup{}
+	mutex := &sync.Mutex{}
 	// 设置等待的任务数量
 	for _, port := range pArr {
 		wg.Add(1)
@@ -53,10 +52,10 @@ func Scan(pArr []int) []*pimetric.Metricx {
 				log.Printf("unmarshal body error: %v", err)
 				return
 			}
+			mutex.Lock()
+			defer mutex.Unlock()
 			rsp = append(rsp, result)
 		}(port)
 	}
-	// 防止网络请求超时，设置1秒timeout
-	parautil.WaitGroupWithTimeout(wg, time.Second)
 	return rsp
 }

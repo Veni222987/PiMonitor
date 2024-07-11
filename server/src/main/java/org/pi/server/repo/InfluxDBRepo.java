@@ -16,9 +16,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoField;
 import java.util.*;
 
-
 /**
  * InfluxDB 操作
+ * 
  * @author hu1hu
  */
 @Repository
@@ -29,6 +29,7 @@ public class InfluxDBRepo {
 
     /**
      * 写入数据
+     * 
      * @param data 数据
      * @return 是否成功
      */
@@ -43,16 +44,21 @@ public class InfluxDBRepo {
         }
     }
 
+    // ......
+}
+
     /**
      * 写入数据
+     * 
      * @param measurement 表名
-     * @param tags 标签
-     * @param fields 字段
-     * @param timestamp 时间戳
-     * @param precision 时间精度
+     * @param tags        标签
+     * @param fields      字段
+     * @param timestamp   时间戳
+     * @param precision   时间精度
      * @return 是否成功
      */
-    public boolean write(String measurement, Map<String, String> tags, Map<String, Object> fields, long timestamp, WritePrecision precision) {
+    public boolean write(String measurement, Map<String, String> tags, Map<String, Object> fields, long timestamp,
+            WritePrecision precision) {
         try {
             Point point = Point.measurement(measurement)
                     .addTags(tags)
@@ -74,6 +80,7 @@ public class InfluxDBRepo {
 
     /**
      * 查询数据
+     * 
      * @param flux Flux 查询语句
      * @return 查询结果
      */
@@ -83,6 +90,7 @@ public class InfluxDBRepo {
 
     /**
      * 解析查询结果
+     * 
      * @param tables 查询结果
      * @return 解析后的结果
      */
@@ -104,7 +112,9 @@ public class InfluxDBRepo {
                     map.put("data", new ArrayList<>());
                     result.put(field, map);
                 } else {
-                    ((List)result.get(field).get("data")).add(Map.of("time", time.getLong(ChronoField.INSTANT_SECONDS) * 1000 + time.get(ChronoField.MILLI_OF_SECOND), "value", value));
+                    ((List) result.get(field).get("data")).add(Map.of("time",
+                            time.getLong(ChronoField.INSTANT_SECONDS) * 1000 + time.get(ChronoField.MILLI_OF_SECOND),
+                            "value", value));
                 }
             });
         });
