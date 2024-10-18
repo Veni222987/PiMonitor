@@ -7,7 +7,7 @@ PiMonitor is the curriculumn design of Software Engineering. A simple agent with
 
 下面的文章介绍了本系统的设计思路和参考资料：
 
-[如何在项目中开启上帝视角 —— 由浅入深研究监控系统](https://veni222987.github.io/2024/07/15/%E5%A6%82%E4%BD%95%E5%9C%A8%E9%A1%B9%E7%9B%AE%E4%B8%AD%E5%BC%80%E5%90%AF%E4%B8%8A%E5%B8%9D%E8%A7%86%E8%A7%92%E2%80%94%E2%80%94%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E7%A0%94%E7%A9%B6%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/)
+[如何在项目中开启上帝视角 —— 由浅入深研究监控系统](https://veni222987.github.io/2024/07/15/%E3%80%90%E7%B2%BE%E3%80%91%E5%A6%82%E4%BD%95%E5%9C%A8%E9%A1%B9%E7%9B%AE%E4%B8%AD%E5%BC%80%E5%90%AF%E4%B8%8A%E5%B8%9D%E8%A7%86%E8%A7%92%E2%80%94%E2%80%94%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E7%A0%94%E7%A9%B6%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/)
 
 # 使用方法
 1. 部署server模块，需要部署数据库并配置环境变量，包括MySQL，Redis，Kafka, InfluxDB等。
